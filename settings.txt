@@ -1,0 +1,7 @@
+{
+    "Keyframe 1": {
+        "liftHeight": 24000,
+        "tiltDegree": 200,
+        "timeAdded": "28/09/2023 15:34:35"
+    }
+}

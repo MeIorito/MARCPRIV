@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
 
 # Constants | slack auth | settings file | font size
 slackToken = "xoxb-5867825218247-5875744156982-TuLlFjvAptQvxyraY4ZQ4Vm6"
-settingsFile = "settingsCustom.txt"
+settingsFile = "settings.txt"
 font = QFont()
 font.setPointSize(11)
 size = (100, 80)
