@@ -26,6 +26,20 @@ Keyframes are the combination of height and angle for a position. There can be a
 
 ![MARC picture](./readmePics/marcPic1.jpeg)
 
+  <table>
+  <tr>
+    <td>
+      <img src="./readmePics/marcPic2.jpeg" alt="marcPic2">
+    </td>
+    <td>
+      <img src="./readmePics/marcPic3.jpeg" alt="marcPic3">
+    </td>
+    <td>
+      <img src="./readmePics/marcPic4.jpeg" alt="marcPic4">
+    </td>
+  </tr>
+</table>
+
 Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstration.
 
 # Software
@@ -45,35 +59,6 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
 - **Zero Position**: Set a new reference position (zero) for the scanner to start scanning cycles from. 
 
 - **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
-
-  <table>
-  <tr>
-    <td colspan="2">
-      The course is a fully interactive 'book' which requires the user to run code in the provided editor or shell to advance:
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    </td>
-  </tr>
-  <tr>
-    <td>
-    </td>
-    <td>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <img src="./readmePics/marcPic2.jpeg" alt="marcPic2">
-    </td>
-    <td>
-      <img src="./readmePics/marcPic3.jpeg" alt="marcPic3">
-    </td>
-    <td>
-      <img src="./readmePics/marcPic4.jpeg" alt="marcPic4">
-    </td>
-  </tr>
-</table>
 
 
 ## Getting Started
