@@ -29,11 +29,10 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
 
 ## Setup
 To run the marcPcVersion.py script, you will need to install the following dependencies:
-
-Python 3.x
-PyQt5
-slack-sdk
-slack-bolt
+1. Python 3.x
+2. PyQt5
+3. slack-sdk
+4. slack-bolt
 You can install these dependencies using pip, like this:
 ```bash
 pip install python
