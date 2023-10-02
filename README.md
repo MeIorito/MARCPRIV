@@ -19,7 +19,7 @@
 
 ## Introduction
 
-The MARC 3D Scanner provides an opportunity for affordable and accessible 3D scanning. It interfaces with MARC (Motorised Alternate Reality Capture), a 3D scanning device, allowing users to adjust scanning parameters, manage keyframes, and initiate scanning cycles to create realistic 3D models. Built with PyQt5, it integrates with Slack for real-time notifications.
+The MARC (Motorised Alternate Reality Capture) 3D Scanner provides an opportunity for affordable and accessible 3D scanning. MARC has a PyQt GUI, allowing users to dynamically change and customize the scanning procces and initiate scanning cycles to create realistic 3D models. It integrates with Slack for real-time notifications.
 
 MARC employs Photogrammetry, where objects rotate on a turntable while the camera captures images from varying heights and angles. These images are processed through software to create 3D models, which are refined by human touch. Keyframes, representing height and angle combinations, facilitate a 360-degree view of objects.
 
@@ -41,9 +41,9 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
 
 - **Wait Times**: Customize the time the scanner waits before and after capturing pictures.
 
-- **Zero Position**: Set a new reference position (zero) for the scanner to start scanning cycles from.
+- **Zero Position**: Set a new reference position (zero) for the scanner to start scanning cycles from. 
 
-- **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
+- **Keyframe Calculator**: Automatically calculate and add keyframes based on trigenometry and predefined scanning patterns, enhancing efficiency.
 
 ## Getting Started
 
@@ -55,7 +55,7 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
 
 ### `cycleThread`
 
-The `cycleThread` class manages scanning cycles, handling scanner movement, image capture, and Slack status updates without freezing the GUI. Keyframe data and scanning parameters are loaded from a settings file.
+The `cycleThread` class manages scanning cycles, handling scanner movement, image capture, and Slack status updates to prevent the freezing of the GUI. Keyframe data and scanning parameters are loaded from a settings file.
 
 ### `MainWindow`
 
@@ -82,13 +82,25 @@ The `KeyframeCalculator` calculates and adds keyframes based on predefined patte
 
 ## Usage
 
+### Manual keyframes
+
 1. Launch the application.
-2. Ensure the scanner is at its lowest position and the camera is level.
+2. Ensure the scanner is at its lowest position and the camera is leveled.
 3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete.
 4. Adjust wait times and pictures per keyframe as needed.
 5. Click "START CYCLE" to initiate a scanning cycle.
 6. Use "SET NEW ZERO" to set a new tilt reference position if needed.
-7. Explore "Keyframe Calculator" to auto-calculate and add keyframes based on patterns (BETA).
+
+
+### Automatic keyframes
+
+1. Launch the application.
+2. Ensure the scanner is at its lowest position and the camera is leveled.
+3. Select "calc keyframes" in the keyframe menu, adjust the height and size of the object. Then press "Calculate".
+4. Adjust wait times and pictures per keyframe as needed.
+5. Click "START CYCLE" to initiate a scanning cycle.
+6. Use "SET NEW ZERO" to set a new tilt reference position if needed.
+
 
 ## Dependencies
 
