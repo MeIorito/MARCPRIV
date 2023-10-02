@@ -119,10 +119,10 @@ The `KeyframeCalculator` class is a separate window for calculating and adding k
 
 1. Launch the application.
 2. Ensure the scanner is at its lowest position and the camera is level.
-3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete.
-4. Adjust wait times and pictures per keyframe as needed.
-5. Click "START CYCLE" to initiate a scanning cycle.
-6. Use "SET NEW ZERO" to set a new tilt reference position if needed.
+3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete. (see [UI](#UI))
+4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
+5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
+6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
 7. Explore "Keyframe Calculator" to auto-calculate and add keyframes based on patterns (BETA).
 
 ## Dependencies
