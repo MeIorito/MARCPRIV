@@ -28,7 +28,7 @@ MARC employs Photogrammetry, where objects rotate on a turntable while the camer
 Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstration.
 
 ## Setup
-To run the marcPcVersion.py script, you will need to install the following dependencies:
+To run the script, you will need to install the following dependencies on your Raspberry Pi:
 1. Python 3.x
 2. PyQt5
 3. slack-sdk
