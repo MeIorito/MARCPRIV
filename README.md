@@ -24,7 +24,21 @@ The MARC (Motorised Alternate Reality Capture) 3D Scanner provides an opportunit
 MARC uses Photogrammetry to scan objects. The object spins on a turntable while the camera makes pictures from different heights and angles. These pictures are then put in software that creates a 3D model. And finaly are cleaned by real people.
 Keyframes are the combination of height and angle for a position. There can be an unlimited amount of keyframes, wich can be cycled through for a perfect 360 view of an object.
 
-![MARC picture](./readmePics/kfcExplenation.png)
+![MARC picture](./readmePics/marcPic1.jpeg)
+
+  <table>
+  <tr>
+    <td>
+      <img src="./readmePics/marcPic2.jpeg" alt="marcPic2">
+    </td>
+    <td>
+      <img src="./readmePics/marcPic3.jpeg" alt="marcPic3">
+    </td>
+    <td>
+      <img src="./readmePics/marcPic4.jpeg" alt="marcPic4">
+    </td>
+  </tr>
+</table>
 
 Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstration.
 
@@ -45,6 +59,24 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
 - **Zero Position**: Set a new reference position (zero) for the scanner to start scanning cycles from. 
 
 - **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
+
+## UI
+
+  See the UI design here:
+
+  <table>
+  <tr>
+    <td>
+      <img src="./readmePics/homescreen.png" alt="homescreen">
+    </td>
+    <td>
+      <img src="./readmePics/keyframescreen.png" alt="keyframescreen">
+    </td>
+    <td>
+      <img src="./readmePics/calcKeyframeScreen.png" alt="calcKeyframes">
+    </td>
+  </tr>
+</table>
 
 ## Getting Started
 
@@ -87,10 +119,10 @@ The `KeyframeCalculator` class is a separate window for calculating and adding k
 
 1. Launch the application.
 2. Ensure the scanner is at its lowest position and the camera is level.
-3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete.
-4. Adjust wait times and pictures per keyframe as needed.
-5. Click "START CYCLE" to initiate a scanning cycle.
-6. Use "SET NEW ZERO" to set a new tilt reference position if needed.
+3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete. (see [UI](#UI))
+4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
+5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
+6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
 7. Explore "Keyframe Calculator" to auto-calculate and add keyframes based on patterns (BETA).
 
 ## Dependencies
