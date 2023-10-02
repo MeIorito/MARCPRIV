@@ -60,6 +60,19 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
 
 - **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
 
+  <table>
+  <tr>
+    <td>
+      <img src="./readmePics/homescreen.png" alt="homescreen">
+    </td>
+    <td>
+      <img src="./readmePics/keyframescreen.png" alt="keyframescreen">
+    </td>
+    <td>
+      <img src="./readmePics/calKeyframeScreen.png" alt="calcKeyframes">
+    </td>
+  </tr>
+</table>
 
 ## Getting Started
 
