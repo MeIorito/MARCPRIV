@@ -54,7 +54,6 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
   </tr>
   <tr>
     <td colspan="2">
-      ![full](images/full.png)
     </td>
   </tr>
   <tr>
@@ -67,13 +66,13 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
   </tr>
   <tr>
     <td>
-      <img src="marcPic2.jpg" alt="marcPic2">
+      <img src="./readmePics/marcPic2.jpg" alt="marcPic2">
     </td>
     <td>
-      <img src="marcPic3.jpg" alt="marcPic3">
+      <img src="./readmePics/marcPic3.jpg" alt="marcPic3">
     </td>
     <td>
-      <img src="marcPic4.jpg" alt="marcPic4">
+      <img src="./readmePics/marcPic4.jpg" alt="marcPic4">
     </td>
   </tr>
 </table>
