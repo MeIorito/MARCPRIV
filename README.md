@@ -27,6 +27,19 @@ MARC employs Photogrammetry, where objects rotate on a turntable while the camer
 
 Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstration.
 
+## Setup
+To run the marcPcVersion.py script, you will need to install the following dependencies:
+
+Python 3.x
+PyQt5
+slack-sdk
+slack-bolt
+You can install these dependencies using pip, like this:
+```bash
+pip install python
+pip install pyqt5 slack-sdk slack-bolt
+```
+
 # Software
 
 ## Features
