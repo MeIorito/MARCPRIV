@@ -60,7 +60,10 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
 
 - **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
 
-See the GUI design here:
+## UI
+
+  See the UI design here:
+
   <table>
   <tr>
     <td>
