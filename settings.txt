@@ -1,7 +1,37 @@
 {
     "Keyframe 1": {
-        "liftHeight": 24000,
-        "tiltDegree": 200,
-        "timeAdded": "28/09/2023 15:34:35"
+        "liftHeight": 22400,
+        "tiltDegree": 2807,
+        "timeAdded": "02/10/2023 15:55:37"
+    },
+    "Keyframe 2": {
+        "liftHeight": 27200,
+        "tiltDegree": 1493,
+        "timeAdded": "02/10/2023 15:55:37"
+    },
+    "Keyframe 3": {
+        "liftHeight": 32000,
+        "tiltDegree": 0,
+        "timeAdded": "02/10/2023 15:55:37"
+    },
+    "Keyframe 4": {
+        "liftHeight": 36800,
+        "tiltDegree": -1493,
+        "timeAdded": "02/10/2023 15:55:37"
+    },
+    "Keyframe 5": {
+        "liftHeight": 41600,
+        "tiltDegree": -2807,
+        "timeAdded": "02/10/2023 15:55:37"
+    },
+    "Keyframe 6": {
+        "liftHeight": 46400,
+        "tiltDegree": -3865,
+        "timeAdded": "02/10/2023 15:55:37"
+    },
+    "Keyframe 7": {
+        "liftHeight": 51200,
+        "tiltDegree": -4684,
+        "timeAdded": "02/10/2023 15:55:37"
     }
 }
