@@ -21,9 +21,9 @@
 
 The MARC 3D Scanner provides an opertunity for 3D scanning cheaply and easily. It has an interface for controlling a 3D scanning device, MARC (Motorised Rlternate Reality Capture). It allows users to adjust scanning parameters, manage keyframes, and initiate scanning cycles for scanning object to get a  realistic 3D model. This application is built using PyQt5 and integrates with Slack for real-time notifications. 
 
+MARC uses Photogrammetry to scan objects. The object spins on a turntable while the camera makes pictures from different heights and angles. These pictures are then put in software that creates a 3D model. And finaly are cleaned by real people.
 Keyframes are the combination of height and angle for a position. There can be an unlimited amount of keyframes, wich can be cycled through for a perfect 360 view of an object.
 
-MARC uses Photogrammetry to scan objects. The object spins on a turntable while the camera makes pictures from different heights and angles. These pictures are then put in software that creates a 3D model. And finaly are cleaned by real people.
 
 Click [here](https://we.tl/t-bFW5XTTR4l) for a production video.
 
