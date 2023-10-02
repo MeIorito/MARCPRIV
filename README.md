@@ -19,7 +19,7 @@
 
 ## Introduction
 
-The MARC 3D Scanner Application provides a user-friendly interface for controlling a 3D scanning device, MARC (Motorised Rlternate Reality Capture). It allows users to adjust scanning parameters, manage keyframes, and initiate scanning cycles for scanning object to get a  realistic 3D model. This application is built using PyQt5 and integrates with Slack for real-time notifications. 
+The MARC 3D Scanner provides an opertunity for 3D scanning cheaply and easily. It has an interface for controlling a 3D scanning device, MARC (Motorised Rlternate Reality Capture). It allows users to adjust scanning parameters, manage keyframes, and initiate scanning cycles for scanning object to get a  realistic 3D model. This application is built using PyQt5 and integrates with Slack for real-time notifications. 
 
 Keyframes are the combination of height and angle for a position. There can be an unlimited amount of keyframes, wich can be cycled through for a perfect 360 view of an object.
 
@@ -47,7 +47,7 @@ Click [here](https://we.tl/t-bFW5XTTR4l) for a production video.
 
 ## Getting Started
 
-1. Clone this repository to your local machine.
+1. Clone this repository to your Raspberry Pi.
 2. Install the required dependencies (see [Dependencies](#dependencies)).
 3. Run the application using Python.
 
@@ -83,13 +83,13 @@ The `KeyframeCalculator` class is a separate window for calculating and adding k
 ## Usage
 
 1. Launch the application.
-2. Adjust the scanner's height, tilt angle.
-3. Manage keyframes through the "KEYFRAME MENU" button, allowing you to add, edit, and delete keyframes
+2. Make sure that the scanner is at the lowest position and that the camera is perfectly straight.
+3. Manage keyframes through the "KEYFRAME MENU" button, allowing you to add, edit, and delete keyframes.
 3. Asjust the wait times to your desired time.
 4. adjust the pictures per keyframe to your desired amount.
 3. Click the "START CYCLE" button to initiate a scanning cycle.
 5. Use the "SET NEW ZERO" button to set a new tilt reference position for scanning if it drifted slightly.
-6. Try the "Keyframe Calculator" window to automatically calculate and add keyframes based on predefined patterns.
+6. Try the "Keyframe Calculator" window to automatically calculate and add keyframes based on predefined patterns. (Still in BETA)
 
 
 ## Dependencies
