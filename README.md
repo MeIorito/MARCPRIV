@@ -24,7 +24,7 @@ The MARC (Motorised Alternate Reality Capture) 3D Scanner provides an opportunit
 MARC uses Photogrammetry to scan objects. The object spins on a turntable while the camera makes pictures from different heights and angles. These pictures are then put in software that creates a 3D model. And finaly are cleaned by real people.
 Keyframes are the combination of height and angle for a position. There can be an unlimited amount of keyframes, wich can be cycled through for a perfect 360 view of an object.
 
-![MARC picture](../readmePics/kfcExplenation.png)
+![MARC picture](./readmePics/kfcExplenation.png)
 
 Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstration.
 
