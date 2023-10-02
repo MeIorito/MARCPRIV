@@ -58,21 +58,19 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
   </tr>
   <tr>
     <td>
-      This requires a mixture of solving problems or simply typing and running provided code. In the latter case, the user is often kept engaged by being asked to predict the output in a simple multiple choice question:
     </td>
     <td>
-      The code at each step is checked automatically. If needed, the student can get small hints to gradually guide them to the solution:
     </td>
   </tr>
   <tr>
     <td>
-      <img src="./readmePics/marcPic2.jpg" alt="marcPic2">
+      <img src="./readmePics/marcPic2.jpeg" alt="marcPic2">
     </td>
     <td>
-      <img src="./readmePics/marcPic3.jpg" alt="marcPic3">
+      <img src="./readmePics/marcPic3.jpeg" alt="marcPic3">
     </td>
     <td>
-      <img src="./readmePics/marcPic4.jpg" alt="marcPic4">
+      <img src="./readmePics/marcPic4.jpeg" alt="marcPic4">
     </td>
   </tr>
 </table>
