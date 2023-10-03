@@ -82,7 +82,8 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
 
 1. Clone this repository to your Raspberry Pi.
 2. Install the required dependencies (see [Dependencies](#dependencies)).
-3. Run the application using Python.
+3. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional)
+4. Run the application using Python.
 
 ## Class Overview
 
@@ -111,7 +112,7 @@ The `EditKeyframeWindow` class enables users to edit existing keyframes. It prov
 
 ### `KeyframeCalculator`
 
-The `KeyframeCalculator` class is a separate window for calculating and adding keyframes based on predefined scanning patterns. It performs trigonometric calculations to determine keyframe positions based on scanner parameters. The calculated keyframes are stored in the settings file for later use. ![ALT TEXT](../IMAGE_PATH/image.png)
+The `KeyframeCalculator` class is a separate window for calculating and adding keyframes based on predefined scanning patterns. It performs trigonometric calculations to determine keyframe positions based on scanner parameters. The calculated keyframes are stored in the settings file for later use.
 
 ## Usage
 
@@ -123,7 +124,15 @@ The `KeyframeCalculator` class is a separate window for calculating and adding k
 4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
 5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
 6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
-7. Explore "Keyframe Calculator" to auto-calculate and add keyframes based on patterns (BETA).
+
+### Automatic keyframes
+
+1. Launch the application.
+2. Ensure the scanner is at its lowest position and the camera is level.
+3. Let the scanner calculate the keyframes based on the height and size of the object by clicking on the "CALCULATE " button. (see [UI](#UI))
+4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
+5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
+6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
 
 ## Dependencies
 
