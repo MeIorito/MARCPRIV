@@ -20,6 +20,7 @@ from PyQt6.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
 # Constants | slack auth | settings file | font size
 slackToken = "xoxb-5867825218247-5875744156982-TuLlFjvAptQvxyraY4ZQ4Vm6"
 settingsFile = "settings.txt"
+cycleCounterFile = "cycleCounter.txt"
 font = QFont()
 font.setPointSize(11)
 size = (100, 80)
@@ -163,76 +164,82 @@ class cycleThread(threading.Thread):
 
     # Capture cycle
     def run(self):
-        startTime = time.time()
-        firstScreen.setCycleState(True)
-        # Total amount of keyframes
-        totKeyframes = secondScreen.keyframeTable.rowCount()
-        with open(settingsFile, "r") as jsonFile:
-            keyframesData = json.load(jsonFile)
+        with open(cycleCounterFile, "r") as jsonFile:
+                cycleCounter = json.load(jsonFile)
+        if cycleCounter["CycleCounter"] < 200:
+            startTime = time.time()
+            firstScreen.setCycleState(True)
+            # Total amount of keyframes
+            totKeyframes = secondScreen.keyframeTable.rowCount()
+            with open(settingsFile, "r") as jsonFile:
+                keyframesData = json.load(jsonFile)
 
-        # TODO Implementeer later de onderstaande berkeningen
-        # amountOfTurns = int(amountCounter.get())
-        # currentMode = turntableMode.get()
-        # degreesPerRotation = int(32000/amountOfTurns)
+            # TODO Implementeer later de onderstaande berkeningen
+            # amountOfTurns = int(amountCounter.get())
+            # currentMode = turntableMode.get()
+            # degreesPerRotation = int(32000/amountOfTurns)
 
-        # Loops through all keyframes and moves the height and tilt accordingly
-        for i in range(1, totKeyframes + 1):
-            if firstScreen.getEmercenyFlag() != True:
-                keyframe = keyframesData[f"Keyframe {i}"]
+            # Loops through all keyframes and moves the height and tilt accordingly
+            for i in range(1, totKeyframes + 1):
+                if firstScreen.getEmercenyFlag() != True:
+                    keyframe = keyframesData[f"Keyframe {i}"]
 
-                if keyframe["liftHeight"] is not None:
-                    if firstScreen.getEmercenyFlag() != True:
-                        print("Camera gaat naar gewilde positie!")
-                        sleep(5)
-                        print("tilt van camera gaat naar gewilde positie!")
-                        sleep(5)
-                        for x in range(self.__picsPerKeyframe):
-                            if firstScreen.getEmercenyFlag() != True:
-                                print("Tafel draait!")
-                                # sleep(2)
-                                sleep(self.__beforeWaitTime)
-                                print("Maakt foto!")
-                                # sleep(self.__afterWaitTime)
-                            else:
-                                text = "The emergency button has been pressed!"
-                                print("The emergency button has been pressed!")
-                                break
-                    else:
-                        break
-                    #     # if currentMode != 'Disabled':
-                    #     for j in range(amountOfTurns):
-                    #         if GPIO.input(EMERGENCY) != False:
-                    #             print("Emergency triggered")
-                    #             break
-                    #         motorTableCW(degreesPerRotation)
-                    #         sleep(beforeWaitTime)
-                    #         captureImage()
-                    #         sleep(afterWaitTime)
-                    # else:
-                    #     sleep(beforeWaitTime)
-                    #     captureImage()
-                    #     sleep(afterWaitTime)
+                    if keyframe["liftHeight"] is not None:
+                        if firstScreen.getEmercenyFlag() != True:
+                            print("Camera gaat naar gewilde positie!")
+                            sleep(5)
+                            print("tilt van camera gaat naar gewilde positie!")
+                            sleep(5)
+                            for x in range(self.__picsPerKeyframe):
+                                if firstScreen.getEmercenyFlag() != True:
+                                    print("Tafel draait!")
+                                    # sleep(2)
+                                    sleep(self.__beforeWaitTime)
+                                    print("Maakt foto!")
+                                    # sleep(self.__afterWaitTime)
+                                else:
+                                    text = "The emergency button has been pressed!"
+                                    print("The emergency button has been pressed!")
+                                    break
+                        else:
+                            break
+                        #     # if currentMode != 'Disabled':
+                        #     for j in range(amountOfTurns):
+                        #         if GPIO.input(EMERGENCY) != False:
+                        #             print("Emergency triggered")
+                        #             break
+                        #         motorTableCW(degreesPerRotation)
+                        #         sleep(beforeWaitTime)
+                        #         captureImage()
+                        #         sleep(afterWaitTime)
+                        # else:
+                        #     sleep(beforeWaitTime)
+                        #     captureImage()
+                        #     sleep(afterWaitTime)
 
-                    # Set slider to height of current keyframe
-                    firstScreen.setSliderVal(keyframe["liftHeight"])
-                    firstScreen.setTiltLabelVal(keyframe["tiltDegree"])
-                    text = (
-                        str(random.choice(self.__marc_berichten))
-                        + " Het kostte: "
-                        + str(round(time.time() - startTime, 2))
-                        + " seconden"
-                    )
-            else:
-                text = "The emergency button has been pressed!"
-                break
-        # Sends message to Slack workspace
-        try:
-            client = slack.WebClient(token=slackToken)
-            client.chat_postMessage(channel="#testbot", text=text)
-        except:
-            print("Er is wat fout gegaan met de verbinding met Slack!")
-        # Updates busy flag
-        firstScreen.setCycleState(False)
+                        # Set slider to height of current keyframe
+                        firstScreen.setSliderVal(keyframe["liftHeight"])
+                        firstScreen.setTiltLabelVal(keyframe["tiltDegree"])
+                        text = (
+                            str(random.choice(self.__marc_berichten))
+                            + " Het kostte: "
+                            + str(round(time.time() - startTime, 2))
+                            + " seconden"
+                        )
+                else:
+                    text = "The emergency button has been pressed!"
+                    break
+            # Sends message to Slack workspace
+            try:
+                client = slack.WebClient(token=slackToken)
+                client.chat_postMessage(channel="#testbot", text=text)
+            except:
+                print("Er is wat fout gegaan met de verbinding met Slack!")
+            # Updates busy flag
+            cycleCounter["CycleCounter"] += 1
+            with open(cycleCounterFile, "w") as jsonFile:
+                json.dump(cycleCounter, jsonFile, indent=4)
+            firstScreen.setCycleState(False)
 
 
 class MainWindow(QMainWindow):
