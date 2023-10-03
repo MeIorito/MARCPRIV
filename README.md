@@ -44,108 +44,108 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
 
 # Software
 
-## Features
-
-- **Real-time Control**: Adjust scanner parameters such as height and tilt angle in real-time using a graphical interface.
-
-- **Keyframe Management**: Easily dynamically create, edit and delete keyframes to define scanning positions and settings using a graphical interface.
-
-- **Scanning Cycles**: Initiate scanning cycles with the click of a button, and monitor progress with real-time Slack notifications.
-
-- **Pictures per keyframe**: Edit the amount of pictures taken with each keyframe in real time.
-
-- **Wait times**: Edit the time the scanner waits before and after taking a picture before doing anything else.
-
-- **Zero Position**: Set a new reference position (zero) for the scanner to start scanning cycles from. 
-
-- **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
-
-## UI
-
+  ## Features
+  
+  - **Real-time Control**: Adjust scanner parameters such as height and tilt angle in real-time using a graphical interface.
+  
+  - **Keyframe Management**: Easily dynamically create, edit and delete keyframes to define scanning positions and settings using a graphical interface.
+  
+  - **Scanning Cycles**: Initiate scanning cycles with the click of a button, and monitor progress with real-time Slack notifications.
+  
+  - **Pictures per keyframe**: Edit the amount of pictures taken with each keyframe in real time.
+  
+  - **Wait times**: Edit the time the scanner waits before and after taking a picture before doing anything else.
+  
+  - **Zero Position**: Set a new reference position (zero) for the scanner to start scanning cycles from. 
+  
+  - **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
+  
+  ## UI
+  
   See the UI design here:
-
-<table>
-  <tr>
-    <td>
-      <img src="./readmePics/homescreen.png" alt="homescreen">
-    </td>
-    <td>
-      <img src="./readmePics/keyframescreen.png" alt="keyframescreen">
-    </td>
-    <td>
-      <img src="./readmePics/calcKeyframeScreen.png" alt="calcKeyframes">
-    </td>
-  </tr>
-</table>
-
-## Getting Started
-
-1. Clone this repository to your Raspberry Pi.
-2. Install the required dependencies (see [Dependencies](#dependencies)).
-3. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional)
-4. Run the application using Python.
-
-## Class Overview
-
-### `cycleThread`
-
-The `cycleThread` class manages scanning cycles, handling scanner movement, image capture, and Slack status updates without freezing the GUI. Keyframe data and scanning parameters are loaded from a settings file.
-
-### `MainWindow`
-
-The `MainWindow` class is the central GUI window of the application. It provides the following features:
-
-- Real-time controls for adjusting scanner parameters.
-- Initiating scanning cycles with real-time Slack notifications.
-- Keyframe management, including adding, editing, and deleting keyframes.
-- Wait time management, before and after taking a picture.
-- Setting a new reference position (zero) for the tilt position.
-- Emergency stop functionality.
-
-### `NewKeyframeWindow`
-
-The `NewKeyframeWindow` class allows users to create and add new keyframes to the scanning process. Users can specify the desired height and tilt angle for each keyframe. Multiple keyframes can be added, and they are stored in a JSON settings file.
-
-### `EditKeyframeWindow`
-
-The `EditKeyframeWindow` class enables users to edit existing keyframes. It provides controls to adjust the height and tilt angle of selected keyframes. Edits are saved to the settings file.
-
-### `KeyframeCalculator`
-
-The `KeyframeCalculator` class is a separate window for calculating and adding keyframes based on predefined scanning patterns. It performs trigonometric calculations to determine keyframe positions based on scanner parameters. The calculated keyframes are stored in the settings file for later use.
-
-## Usage
-
-### Manual keyframes
-
-1. Launch the application.
-2. Ensure the scanner is at its lowest position and the camera is level.
-3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete. (see [UI](#UI))
-4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
-5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
-6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
-
-### Automatic keyframes
-
-1. Launch the application.
-2. Ensure the scanner is at its lowest position and the camera is level.
-3. Let the scanner calculate the keyframes based on the height and size of the object by clicking on the "CALCULATE " button. (see [UI](#UI))
-4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
-5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
-6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
-
-## Dependencies
-
-The following dependencies are required to run the application:
-
-- Python 3
-- PyQt5
-- Slack API (for sending messages to Slack)
-- JSON (for storing keyframe data)
-
-## Contributions
-
-Contributions to this codebase are welcome. You can enhance existing features, improve the user interface, fix issues, or add new functionalities. Feel free to open pull requests and contribute to the project's development.
+  
+  <table>
+    <tr>
+      <td>
+        <img src="./readmePics/homescreen.png" alt="homescreen">
+      </td>
+      <td>
+        <img src="./readmePics/keyframescreen.png" alt="keyframescreen">
+      </td>
+      <td>
+        <img src="./readmePics/calcKeyframeScreen.png" alt="calcKeyframes">
+      </td>
+    </tr>
+  </table>
+  
+  ## Getting Started
+  
+  1. Clone this repository to your Raspberry Pi.
+  2. Install the required dependencies (see [Dependencies](#dependencies)).
+  3. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional)
+  4. Run the application using Python.
+  
+  ## Class Overview
+  
+  ### `cycleThread`
+  
+  The `cycleThread` class manages scanning cycles, handling scanner movement, image capture, and Slack status updates without freezing the GUI. Keyframe data and scanning parameters are loaded from a settings file.
+  
+  ### `MainWindow`
+  
+  The `MainWindow` class is the central GUI window of the application. It provides the following features:
+  
+  - Real-time controls for adjusting scanner parameters.
+  - Initiating scanning cycles with real-time Slack notifications.
+  - Keyframe management, including adding, editing, and deleting keyframes.
+  - Wait time management, before and after taking a picture.
+  - Setting a new reference position (zero) for the tilt position.
+  - Emergency stop functionality.
+  
+  ### `NewKeyframeWindow`
+  
+  The `NewKeyframeWindow` class allows users to create and add new keyframes to the scanning process. Users can specify the desired height and tilt angle for each keyframe. Multiple keyframes can be added, and they are stored in a JSON settings file.
+  
+  ### `EditKeyframeWindow`
+  
+  The `EditKeyframeWindow` class enables users to edit existing keyframes. It provides controls to adjust the height and tilt angle of selected keyframes. Edits are saved to the settings file.
+  
+  ### `KeyframeCalculator`
+  
+  The `KeyframeCalculator` class is a separate window for calculating and adding keyframes based on predefined scanning patterns. It performs trigonometric calculations to determine keyframe positions based on scanner parameters. The calculated keyframes are stored in the settings file for later use.
+  
+  ## Usage
+  
+  ### Manual keyframes
+  
+  1. Launch the application.
+  2. Ensure the scanner is at its lowest position and the camera is level.
+  3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete. (see [UI](#UI))
+  4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
+  5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
+  6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
+  
+  ### Automatic keyframes
+  
+  1. Launch the application.
+  2. Ensure the scanner is at its lowest position and the camera is level.
+  3. Let the scanner calculate the keyframes based on the height and size of the object by clicking on the "CALCULATE " button. (see [UI](#UI))
+  4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
+  5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
+  6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
+  
+  ## Dependencies
+  
+  The following dependencies are required to run the application:
+  
+  - Python 3
+  - PyQt5
+  - Slack API (for sending messages to Slack)
+  - JSON (for storing keyframe data)
+  
+  ## Contributions
+  
+  Contributions to this codebase are welcome. You can enhance existing features, improve the user interface, fix issues, or add new functionalities. Feel free to open pull requests and contribute to the project's development.
 
 # Hardware
 
