@@ -62,6 +62,17 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
   
   - **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
   
+  ## Getting Started
+  
+  1. Clone this repository to your Raspberry Pi.
+  2. Install the required dependencies (see [Dependencies](#dependencies)).
+     ```python
+     pip install PyQt5
+     pip install slack
+     ```
+  4. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional)
+  5. Run the application using Python.
+     
   ## UI
   
   See the UI design here:
@@ -80,12 +91,6 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
     </tr>
   </table>
   
-  ## Getting Started
-  
-  1. Clone this repository to your Raspberry Pi.
-  2. Install the required dependencies (see [Dependencies](#dependencies)).
-  3. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional)
-  4. Run the application using Python.
   
   ## Class Overview
   
