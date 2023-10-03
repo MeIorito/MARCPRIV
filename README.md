@@ -71,13 +71,21 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
   1. First set up the hardware. (see [Hardware](#hardware)).
   2. Clone this repository to your Raspberry Pi.
   3. Install the required dependencies (see [Dependencies](#dependencies)). (Trouble installing PyQt5? Read [this](https://www.pythonguis.com/installation/install-pyqt5-raspberry-pi/) article)
-```PYTHON
+```Python
 sudo apt install python3-pyqt5
 pip install slack
 ```
   4. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional) If you decide not to use this feature you will have to manually delete the slack code.
-  5. Run the application using Python.
-     
+  5. Change the slackToken to your own. Line 23
+```Python
+slackToken = <"youToken">
+```
+  6. Change the distance variable to the distance between the object and the tilt point. Line 30
+```Python
+objDistance = <"yourDistanceInCm">
+```
+  8. Run the application using Python.
+
   ## UI
   
   See the UI design here:
