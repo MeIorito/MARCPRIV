@@ -1,3 +1,5 @@
+![MARC picture](./readmePics/icon.png)
+
 # MARC 3D Scanner Application
 
 ## Table of Contents
