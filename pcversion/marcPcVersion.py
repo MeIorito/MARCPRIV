@@ -1,3 +1,5 @@
+# Note that this is a PC only version. Meant for testing the visuals and logic of the program without the need of a Raspberry Pi.
+
 import sys
 import json
 import time
