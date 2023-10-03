@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
 # Constants | slack auth | settings file | font size
 slackToken = "xoxb-5867825218247-5875744156982-TuLlFjvAptQvxyraY4ZQ4Vm6"
 settingsFile = "settingsCustom.txt"
+cycleCounterFile = "cycleCounter.txt"
 font = QFont()
 font.setPointSize(11)
 size = (100, 80)
@@ -156,61 +157,74 @@ class cycleThread(threading.Thread):
 
     # Capture cycle
     def run(self):
-        startTime = time.time()
-        firstScreen.setCycleState(True)
-        # Total amount of keyframes
-        totKeyframes = secondScreen.keyframeTable.rowCount()
-        with open(settingsFile, "r") as jsonFile:
-            keyframesData = json.load(jsonFile)
+        with open(cycleCounterFile, "r") as jsonFile:
+            cycleCounter = json.load(jsonFile)
 
-        # Loops through all keyframes and moves the height and tilt accordingly. Also checks regurelally for emergency stop
-        for i in range(1, totKeyframes + 1):
-            if firstScreen.getEmercenyFlag() != True:
+        if cycleCounter["cycleCounter"] <= 200:
+            startTime = time.time()
+            firstScreen.setCycleState(True)
+            # Total amount of keyframes
+            totKeyframes = secondScreen.keyframeTable.rowCount()
+            with open(settingsFile, "r") as jsonFile:
+                keyframesData = json.load(jsonFile)
 
-                if keyframesData is not None:
-                    if firstScreen.getEmercenyFlag() != True:
-                        firstScreen.moveToPosition(
+            # Loops through all keyframes and moves the height and tilt accordingly. Also checks regurelally for emergency stop
+            for i in range(1, totKeyframes + 1):
+                if firstScreen.getEmercenyFlag() != True:
+
+                    if keyframesData is not None:
+                        if firstScreen.getEmercenyFlag() != True:
+                            firstScreen.moveToPosition(
+                                keyframesData[f"Keyframe {i}"]["liftHeight"]
+                            )
+                            firstScreen.angleToPosition(
+                                keyframesData[f"Keyframe {i}"]["tiltDegree"]
+                            )
+                            for _ in range(self.__picsPerKeyframe):
+                                if not firstScreen.getEmercenyFlag():
+                                    sleep(self.__beforeWaitTime)
+                                    #captureImage()
+                                    sleep(self.__afterWaitTime)
+                                    motorTableCW(self.__degreesPerRotation)
+                                else:
+                                    text = "The emergency button has been pressed!"
+                                    break
+                        else:
+                            break
+                        # Set slider and variables to height of current keyframe
+                        firstScreen.setSliderVal(
                             keyframesData[f"Keyframe {i}"]["liftHeight"]
                         )
-                        firstScreen.angleToPosition(
+                        firstScreen.setTiltLabelVal(
                             keyframesData[f"Keyframe {i}"]["tiltDegree"]
                         )
-                        for _ in range(self.__picsPerKeyframe):
-                            if not firstScreen.getEmercenyFlag():
-                                sleep(self.__beforeWaitTime)
-                                #captureImage()
-                                sleep(self.__afterWaitTime)
-                                motorTableCW(self.__degreesPerRotation)
-                            else:
-                                text = "The emergency button has been pressed!"
-                                break
-                    else:
-                        break
-                    # Set slider and variables to height of current keyframe
-                    firstScreen.setSliderVal(
-                        keyframesData[f"Keyframe {i}"]["liftHeight"]
-                    )
-                    firstScreen.setTiltLabelVal(
-                        keyframesData[f"Keyframe {i}"]["tiltDegree"]
-                    )
-                    text = (
-                        str(random.choice(self.__marcMessages))
-                        + " It took: "
-                        + str(round(time.time() - startTime, 2))
-                        + " seconds"
-                    )
-            else:
-                text = "The emergency button has been pressed!"
-                break
-        firstScreen.reset()
-        # Sends message to Slack workspace
-        try:
-            client = slack.WebClient(token=slackToken)
-            client.chat_postMessage(channel="#testbot", text=text)
-        except:
-            print("Oops! Something went wrong with the connection to Slack!")
-        # Updates busy flag
-        firstScreen.setCycleState(False)
+                        text = (
+                            str(random.choice(self.__marcMessages))
+                            + " It took: "
+                            + str(round(time.time() - startTime, 2))
+                            + " seconds"
+                        )
+                else:
+                    text = "The emergency button has been pressed!"
+                    break
+            firstScreen.reset()
+            # Sends message to Slack workspace
+            try:
+                client = slack.WebClient(token=slackToken)
+                client.chat_postMessage(channel="#testbot", text=text)
+            except:
+                print("Oops! Something went wrong with the connection to Slack!")
+            # Updates busy flag
+            firstScreen.setCycleState(False)
+            cycleCounter["cycleCounter"] += 1
+        else:
+            text = "The cycle limit has been reached! Adjust the motors and reset the counter!"
+            # Sends message to Slack workspace
+            try:
+                client = slack.WebClient(token=slackToken)
+                client.chat_postMessage(channel="#testbot", text=text)
+            except:
+                print("Oops! Something went wrong with the connection to Slack!")
 
 
 class MainWindow(QMainWindow):
