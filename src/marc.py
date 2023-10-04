@@ -161,7 +161,7 @@ class cycleThread(threading.Thread):
             cycleCounter = json.load(jsonFile)
 
         # Checks if the cycle limit has been reached, after 200 cycles the motors need to be readjusted
-        if cycleCounter["cycleCounter"] <= 200:
+        if cycleCounter["CycleCounter"] <= 3:
             startTime = time.time()
             firstScreen.setCycleState(True)
 
@@ -278,6 +278,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.sliderLabel, 5, 0)
         layout.addWidget(self.tiltLabel, 0, 1)
         layout.addLayout(self.tiltButtons, 1, 1, 1, 1)
+        layout.addWidget(self.newZeroButton, 2, 1)
         layout.addWidget(self.waitBeforeLabel, 3, 1)
         layout.addLayout(self.waitBeforeButtons, 4, 1)
         layout.addWidget(self.waitAfterLabel, 3, 2)
@@ -416,7 +417,8 @@ class MainWindow(QMainWindow):
     # Sets the tilt variable to 0 because of inconsistencies in the tilt motor
     def newZeroClicked(self):
         self.__tiltValue = 0
-        self.tiltLabel.setText("Angle: " + str(self.__tiltValue))
+        self.__desiredTilt = 0
+        self.tiltLabel.setText("Desired Tilt Angle: " + str(self.__tiltValue))
 
     # Depending on which button got sent here it adds or subs 20 from the tilt variable. Add button has operator = + and sub has operator = -
     def tiltButtonsClicked(self, operator):
@@ -424,7 +426,7 @@ class MainWindow(QMainWindow):
             self.__desiredTilt += 100
         elif operator == "-":
             self.__desiredTilt -= 100
-        self.tiltLabel.setText("Angle: " + str(self.__desiredTilt))
+        self.tiltLabel.setText("Desired Tilt Angle: " + str(self.__desiredTilt))
 
     # Depending on what the source and operator are, the correct value is added or subbed from the right time variable. Also refreshes the screen
     def timeButtonsClicked(self, source, operator):
