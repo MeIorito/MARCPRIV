@@ -7,8 +7,8 @@ import random
 import threading
 from time import sleep
 import RPi.GPIO as GPIO
-from PyQt5.QtCore import *
 from PyQt5 import QtCore
+from PyQt5.QtCore import *
 from motorfunctions import *
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
@@ -160,9 +160,11 @@ class cycleThread(threading.Thread):
         with open(cycleCounterFile, "r") as jsonFile:
             cycleCounter = json.load(jsonFile)
 
+        # Checks if the cycle limit has been reached, after 200 cycles the motors need to be readjusted
         if cycleCounter["cycleCounter"] <= 200:
             startTime = time.time()
             firstScreen.setCycleState(True)
+
             # Total amount of keyframes
             totKeyframes = secondScreen.keyframeTable.rowCount()
             with open(settingsFile, "r") as jsonFile:
@@ -171,7 +173,6 @@ class cycleThread(threading.Thread):
             # Loops through all keyframes and moves the height and tilt accordingly. Also checks regurelally for emergency stop
             for i in range(1, totKeyframes + 1):
                 if firstScreen.getEmercenyFlag() != True:
-
                     if keyframesData is not None:
                         if firstScreen.getEmercenyFlag() != True:
                             firstScreen.moveToPosition(
@@ -218,7 +219,7 @@ class cycleThread(threading.Thread):
             firstScreen.setCycleState(False)
             cycleCounter["cycleCounter"] += 1
         else:
-            text = "The cycle limit has been reached! Adjust the motors and reset the counter!"
+            text = "The cycle limit has been reached! Readjust the motors and reset the counter!"
             # Sends message to Slack workspace
             try:
                 client = slack.WebClient(token=slackToken)

@@ -10,13 +10,12 @@ import threading
 from time import sleep
 
 # import RPi.GPIO as GPIO
-from PyQt6.QtCore import *
 from PyQt6 import QtCore
+from PyQt6.QtCore import *
 
-# from motorfunctions import *
-from PyQt6.QtGui import QFont
+# from motorfunctions import all
 from PyQt6.QtWidgets import *
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
 
 # Constants | slack auth | settings file | font size
