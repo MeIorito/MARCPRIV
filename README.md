@@ -48,9 +48,21 @@ Here are some pictures of MARC:
 
 Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstration.
 
-# Software
+# Features
+  
+  - **Height control**: The scanner can move up and down with a range of 180 centimeters.
+  
+  - **Tilt control**: The scanner can move its tilthead both clockwise and counterclockwise.
+  
+  - **Turntable control**: The scanner can turn its turntable.
+  
+  - **Physical emergencystop button**: This button stops all the power to the motors.
 
-  ## Features
+  - **Stop switches at the top and bottom**: Can stop the height motor if it overshoots.
+
+See the scanner movents here:
+
+**Pictures**
   
   - **Real-time Control**: Adjust scanner parameters such as height and tilt angle in real-time using a graphical interface.
   
@@ -65,26 +77,46 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
   - **Zero Position**: Set a new reference position (zero) for the scanner to start scanning cycles from. 
   
   - **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
+
+# Hardware
+
+  ## Tools necessary
+
+  - x
+  - x
+  - x
+  - x
+
+  ## Expected commitment time
+
+  In our experience, the marc takes xxx hours to build. Of cource your skill level has a great impact on this, but with the documentation everyone can do it.
+
+  ## Getting started
+
+  - **Step 1**: Order the neseccary parts [here]().
+  - **Step 2**: Build the frame for MARC.
+  - **Step 3**: Connect all the electronics using [this]() schematic.
+  - **Step 4**: Combine the frame with the electronics
   
+# Software
   ## Getting Started
 
-  1. First set up the hardware. (see [Hardware](#hardware)).
-  2. Clone this repository to your Raspberry Pi.
-  3. Install the required dependencies (see [Dependencies](#dependencies)). (Trouble installing PyQt5? Read [this](https://www.pythonguis.com/installation/install-pyqt5-raspberry-pi/) article)
+  1. Clone this repository to your Raspberry Pi.
+  2. Install the required dependencies (see [Dependencies](#dependencies)). (Trouble installing PyQt5? Read [this](https://www.pythonguis.com/installation/install-pyqt5-raspberry-pi/) article)
 ```Python
 sudo apt install python3-pyqt5
 pip install slack
 ```
-  4. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional) If you decide not to use this feature you will have to manually delete the slack code.
-  5. Change the slackToken to your own. Line 23
+  3. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional) If you decide not to use this feature you will have to manually delete the slack code.
+  4. Change the slackToken to your own. Line 23
 ```Python
 slackToken = <"youToken">
 ```
-  6. Change the distance variable to the distance between the object and the tilt point. Line 30
+  5. Change the distance variable to the distance between the object and the tilt point. Line 30
 ```Python
 objDistance = <"yourDistanceInCm">
 ```
-  8. Run the application using Python.
+  7. Run the application using Python.
 
   ## UI
   
@@ -124,36 +156,6 @@ objDistance = <"yourDistanceInCm">
   5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
   6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
   
-  ## Class Overview
-  
-  ### `cycleThread`
-  
-  The `cycleThread` class manages scanning cycles, handling scanner movement, image capture, and Slack status updates without freezing the GUI. Keyframe data and scanning parameters are loaded from a settings file.
-  
-  ### `MainWindow`
-  
-  The `MainWindow` class is the central GUI window of the application. It provides the following features:
-  
-  - Real-time controls for adjusting scanner parameters.
-  - Initiating scanning cycles with real-time Slack notifications.
-  - Keyframe management, including adding, editing, and deleting keyframes.
-  - Wait time management, before and after taking a picture.
-  - Setting a new reference position (zero) for the tilt position.
-  - Emergency stop functionality.
-  
-  ### `NewKeyframeWindow`
-  
-  The `NewKeyframeWindow` class allows users to create and add new keyframes to the scanning process. Users can specify the desired height and tilt angle for each keyframe. Multiple keyframes can be added, and they are stored in a JSON settings file.
-  
-  ### `EditKeyframeWindow`
-  
-  The `EditKeyframeWindow` class enables users to edit existing keyframes. It provides controls to adjust the height and tilt angle of selected keyframes. Edits are saved to the settings file.
-  
-  ### `KeyframeCalculator`
-  
-  The `KeyframeCalculator` class is a separate window for calculating and adding keyframes based on predefined scanning patterns. It performs trigonometric calculations to determine keyframe positions based on scanner parameters. The calculated keyframes are stored in the settings file for later use.
-  
-  
   ## Dependencies
   
   The following dependencies are required to run the application:
@@ -162,25 +164,6 @@ objDistance = <"yourDistanceInCm">
   - PyQt5
   - Slack API (for sending messages to Slack)
   - JSON (for storing keyframe data)
-  
-
-# Hardware
-
-## Features
-  
-  - **Height control**: The scanner can move up and down with a range of 180 centimeters.
-  
-  - **Tilt control**: The scanner can move its tilthead both clockwise and counterclockwise.
-  
-  - **Turntable control**: The scanner can turn its turntable.
-  
-  - **Physical emergencystop button**: This button stops all the power to the motors.
-
-  - **Stop switches at the top and bottom**: Can stop the height motor if it overshoots.
-
-See the scanner movents here:
-
-**Pictures**
 
 ## License
 
