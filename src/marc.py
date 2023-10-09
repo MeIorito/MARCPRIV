@@ -885,7 +885,7 @@ class EditKeyframeWindow(QMainWindow):
 
         self.counter = 0
         self.timer = QTimer()
-        self.timer.timeout.connect(self.reset_increment)
+        # self.timer.timeout.connect(self.reset_increment)
         self.button_pressed = False
 
         self.setWindowTitle("Keyframe List")
@@ -910,7 +910,7 @@ class EditKeyframeWindow(QMainWindow):
 
         self.navButtonsLayout = QHBoxLayout()
         self.navButtonsLayout.addWidget(self.backButton)
-        self.navButtonsLayout.addWidget(self.addButton)
+        self.navButtonsLayout.addWidget(self.editButton)
 
         window.addWidget(self.heightLabel, 0, 0)
         window.addLayout(self.heightButtonsLayout, 1, 0)
