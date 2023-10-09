@@ -4,18 +4,18 @@
 
 ## Table of Contents
 - [Introduction](#introduction)
+- [Features](#features)
+- [Hardware](#hardware)
+  - [Neseccary tools](#tools-necessary)
+  - [Expected commitment time](#expected-commitment-time)
+  - [Get started](#getting-started)
 - [Software](#software)
-  - [Features](#features)
-  - [Getting Started](#getting-started)
-  - [Class Overview](#class-overview)
-    - [`cycleThread`](#cyclethread)
-    - [`MainWindow`](#mainwindow)
-    - [`NewKeyframeWindow`](#newkeyframewindow)
-    - [`EditKeyframeWindow`](#editkeyframewindow)
-    - [`KeyframeCalculator`](#keyframecalculator)
+  - [Get started](#getting-started)
+  - [User interface](#ui)
   - [Usage](#usage)
+      - [Manual keyframes](#manual-keyframes)
+      - [Automatic keyframes](#automatic-keyframes)
   - [Dependencies](#dependencies)
-  - [Contributions](#contributions)
 - [Hardware](#hardware)
 - [License](#license)
 
@@ -62,7 +62,23 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
 
 See the scanner movents here:
 
-**Pictures**
+<table>
+  <tr>
+    <td>
+      <img src="./readmePics/fotoLaag.jpeg" alt="marcPic2">
+    </td>
+    <td>
+      <img src="./readmePics/fotoHoog.jpeg" alt="marcPic2">
+    </td>
+    <td>
+      <img src="./readmePics/fotoTiltLaag.jpeg" alt="marcPic2">
+    </td>
+    <td>
+      <img src="./readmePics/fotoTiltHoog.jpeg" alt="marcPic2">
+    </td>
+  </tr>
+</table>
+
   
   - **Real-time Control**: Adjust scanner parameters such as height and tilt angle in real-time using a graphical interface.
   
