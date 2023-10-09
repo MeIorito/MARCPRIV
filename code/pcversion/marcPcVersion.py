@@ -20,8 +20,8 @@ from PyQt6.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
 
 # Constants | slack auth | settings file | font size
 slackToken = "xoxb-5867825218247-5875744156982-TuLlFjvAptQvxyraY4ZQ4Vm6"
-settingsFile = "settings.txt"
-cycleCounterFile = "cycleCounter.txt"
+settingsFile = "code\settings.txt"
+cycleCounterFile = 'code\cycleCounter.txt'
 font = QFont()
 font.setPointSize(11)
 size = (100, 80)
