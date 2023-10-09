@@ -883,6 +883,12 @@ class EditKeyframeWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.counter = 0
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.reset_increment)
+        self.button_pressed = False
+
+        self.setWindowTitle("Keyframe List")
         self.setStyleSheet("background-color: #343541;")
         self.setGeometry(100, 100, 800, 400)
 
@@ -891,49 +897,20 @@ class EditKeyframeWindow(QMainWindow):
 
         window = QGridLayout()
 
-        # tilt widgets
-        self.tiltLabel = QLabel("Desired Tilt Angle: 0")
-        self.tiltLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.tiltLabel.setStyleSheet(labelStyle)
-        self.tiltLabel.setFont(font)
-
-        self.tiltAddButton = QPushButton("+")
-        self.tiltAddButton.clicked.connect(lambda: self.tiltButtonsClicked("+"))
-        self.tiltSubButton = QPushButton("-")
-        self.tiltSubButton.clicked.connect(lambda: self.tiltButtonsClicked("-"))
-
-        # height widgets
-        self.heightLabel = QLabel("Desired Height: 0")
-        self.heightLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.heightLabel.setStyleSheet(labelStyle)
-        self.heightLabel.setFont(font)
-
-        self.heightAddButton = QPushButton("+")
-        self.heightAddButton.clicked.connect(lambda: self.heightButtonsClicked("+"))
-        self.heightSubButton = QPushButton("-")
-        self.heightSubButton.clicked.connect(lambda: self.heightButtonsClicked("-"))
-
-        # Tilt buttons
-        self.tiltButtonsLayout = QHBoxLayout()
-        self.tiltButtonsLayout.addWidget(self.tiltAddButton)
-        self.tiltButtonsLayout.addWidget(self.tiltSubButton)
-
-        # Height buttons
-        self.heightButtonsLayout = QHBoxLayout()
-        self.heightButtonsLayout.addWidget(self.heightAddButton)
-        self.heightButtonsLayout.addWidget(self.heightSubButton)
-
-        self.backButton = QPushButton("BACK")
-        self.backButton.clicked.connect(self.backButtonClicked)
-
-        self.editButton = QPushButton("EDIT KEYFRAME")
-        self.editButton.clicked.connect(self.editKeyframeClicked)
-        self.heightLabel.setMaximumHeight(100)
-        self.tiltLabel.setMaximumHeight(100)
+        self.heightLabel = self.setupLabel("Desired height: 0", font, labelStyle)
+        self.heightButtonsLayout = self.setupHeightButtons(buttonStyle, size)
+        self.tiltLabel = self.setupLabel("Desired Tilt Angle: 0", font, labelStyle)
+        self.tiltButtonsLayout = self.setupTiltButtons(buttonStyle, size)
+        self.backButton = self.setupButton(
+            "BACK", self.backButtonClicked, buttonStyle, size
+        )
+        self.editButton = self.setupButton(
+            "EDIT KEYFRAME", self.editKeyframeClicked, buttonStyle, size
+        )
 
         self.navButtonsLayout = QHBoxLayout()
         self.navButtonsLayout.addWidget(self.backButton)
-        self.navButtonsLayout.addWidget(self.editButton)
+        self.navButtonsLayout.addWidget(self.addButton)
 
         window.addWidget(self.heightLabel, 0, 0)
         window.addLayout(self.heightButtonsLayout, 1, 0)
@@ -944,7 +921,52 @@ class EditKeyframeWindow(QMainWindow):
         widget = QWidget()
         widget.setLayout(window)
         self.setCentralWidget(widget)
-        self.showMaximized()
+
+    # generic function for setting up labels
+    def setupLabel(self, text, font, style):
+        label = QLabel(text)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label.setFont(font)
+        label.setStyleSheet(style)
+        return label
+
+    # generic function for setting up buttons
+    def setupButton(self, text, slot, style, size):
+        button = QPushButton(text)
+        button.clicked.connect(slot)
+        button.setStyleSheet(style)
+        button.setMinimumSize(size[0], size[1])
+        return button
+
+    # function for setting up tilt buttons
+    def setupHeightButtons(self, style, size):
+        heightAddButton = self.setupButton(
+            "+", lambda: self.heightButtonsClicked("+"), style, size
+        )
+        heightSubButton = self.setupButton(
+            "-", lambda: self.heightButtonsClicked("-"), style, size
+        )
+
+        heightButtonsLayout = QHBoxLayout()
+        heightButtonsLayout.addWidget(heightAddButton)
+        heightButtonsLayout.addWidget(heightSubButton)
+
+        return heightButtonsLayout
+
+    def setupTiltButtons(self, style, size):
+        tiltAddButton = self.setupButton(
+            "+", lambda: self.tiltButtonsClicked("+"), style, size
+        )
+        tiltSubButton = self.setupButton(
+            "-", lambda: self.tiltButtonsClicked("-"), style, size
+        )
+
+        tiltButtonsLayout = QHBoxLayout()
+        tiltButtonsLayout.addWidget(tiltAddButton)
+        tiltButtonsLayout.addWidget(tiltSubButton)
+
+        return tiltButtonsLayout
+
 
     def editKeyframeClicked(self):
         if secondScreen.selectedKeyframeIndex is not None:
