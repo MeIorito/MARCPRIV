@@ -155,6 +155,13 @@ class cycleThread(threading.Thread):
         self.__picsPerKeyframe = picsPerKeyframe
         self.__degreesPerRotation = int(32000 / self.__picsPerKeyframe)
 
+    def sendSlackMessage(self, text):
+        try:
+            client = slack.WebClient(token=slackToken)
+            client.chat_postMessage(channel="#testbot", text=text)
+        except:
+            print("Oops! Something went wrong with the connection to Slack!")
+
     # Capture cycle. Takes a picture, rotates the table and repeats.
     def run(self):
         with open(cycleCounterFile, "r") as jsonFile:
@@ -175,6 +182,11 @@ class cycleThread(threading.Thread):
                 if firstScreen.getEmercenyFlag() != True:
                     if keyframesData is not None:
                         if firstScreen.getEmercenyFlag() != True:
+
+                            # Set slider and variables to height of current keyframe
+                            firstScreen.setSliderVal(keyframesData[f"Keyframe {i}"]["liftHeight"])
+                            firstScreen.setTiltLabelVal(keyframesData[f"Keyframe {i}"]["tiltDegree"])
+
                             firstScreen.moveToPosition(
                                 keyframesData[f"Keyframe {i}"]["liftHeight"]
                             )
@@ -192,13 +204,7 @@ class cycleThread(threading.Thread):
                                     break
                         else:
                             break
-                        # Set slider and variables to height of current keyframe
-                        firstScreen.setSliderVal(
-                            keyframesData[f"Keyframe {i}"]["liftHeight"]
-                        )
-                        firstScreen.setTiltLabelVal(
-                            keyframesData[f"Keyframe {i}"]["tiltDegree"]
-                        )
+                
                         text = (
                             str(random.choice(self.__marcMessages))
                             + " It took: "
@@ -208,24 +214,21 @@ class cycleThread(threading.Thread):
                 else:
                     text = "The emergency button has been pressed!"
                     break
+                self.sendSlackMessage(f'Keyframe {i} is done! Keyframes to go: {totKeyframes - i}')
+                
+            # Resets the motors and the counter
             firstScreen.reset()
             # Sends message to Slack workspace
-            try:
-                client = slack.WebClient(token=slackToken)
-                client.chat_postMessage(channel="#testbot", text=text)
-            except:
-                print("Oops! Something went wrong with the connection to Slack!")
+            self.sendSlackMessage(text)
+
             # Updates busy flag
             firstScreen.setCycleState(False)
             cycleCounter["cycleCounter"] += 1
         else:
             text = "The cycle limit has been reached! Readjust the motors and reset the counter!"
+
             # Sends message to Slack workspace
-            try:
-                client = slack.WebClient(token=slackToken)
-                client.chat_postMessage(channel="#testbot", text=text)
-            except:
-                print("Oops! Something went wrong with the connection to Slack!")
+            self.sendSlackMessage(text)
 
 
 class MainWindow(QMainWindow):
