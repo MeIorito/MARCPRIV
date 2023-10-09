@@ -442,8 +442,6 @@ class MainWindow(QMainWindow):
 
     # Move MARC to wanted height and tilt, and sets the variables to those values
     def moveButtonClicked(self):
-        self.angleToPosition(self.__desiredTilt)
-        self.__tiltValue = self.__desiredTilt
         self.moveToPosition(self.__sliderValue)
         self.__heightValue = self.__sliderValue
 
@@ -456,10 +454,12 @@ class MainWindow(QMainWindow):
     # Depending on which button got sent here it adds or subs 20 from the tilt variable. Add button has operator = + and sub has operator = -
     def tiltButtonsClicked(self, operator):
         if operator == "+":
-            self.__desiredTilt += 100
+            self.__desiredTilt += 200
         elif operator == "-":
-            self.__desiredTilt -= 100
-        self.tiltLabel.setText("Desired Tilt Angle: " + str(self.__desiredTilt))
+            self.__desiredTilt -= 200
+        self.tiltLabel.setText("Tilt: " + str(self.__desiredTilt))
+        self.angleToPosition(self.__desiredTilt)
+        self.__tiltValue = self.__desiredTilt
 
     # Depending on what the source and operator are, the correct value is added or subbed from the right time variable. Also refreshes the screen
     def timeButtonsClicked(self, source, operator):
@@ -1012,9 +1012,9 @@ class KeyframeCalculator(QMainWindow):
 
         # Height slider Widgets
         self.heightSliderLabel = self.setupLabel("Height: 30", font, labelStyle)
-        self.heightSlider = self.setupSlider(30, 160, 1, 100, sliderStylesheet, self.updateHeightSliderLabel)
+        self.heightSlider = self.setupSlider(30, 160, 1, 100, self.updateHeightSliderLabel)
         self.sizeSliderLabel = self.setupLabel("Size: small", font, labelStyle)
-        self.sizeSlider = self.setupSlider(0, 2, 1, 100, sliderStylesheet, self.updateSizeSliderLabel)
+        self.sizeSlider = self.setupSlider(0, 2, 1, 100,  self.updateSizeSliderLabel)
         self.backButton = self.setupButton("Back", self.back, buttonStyle, size)
         self.calculateButton = self.setupButton("Calculate", self.calculate, buttonStyle, size)
 
