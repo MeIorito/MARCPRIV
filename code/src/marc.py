@@ -737,7 +737,7 @@ class NewKeyframeWindow(QMainWindow):
         self.navButtonsLayout.addWidget(self.addButton)
 
         window.addWidget(self.heightLabel, 0, 0)
-        window.addLayout(self.heightButtonsLayout, 1, 0)
+        window.addLayout(self.greatHeightButtonsLayout, 1, 0)
         window.addLayout(self.smallHeightButtonsLayout, 2, 0)
         window.addWidget(self.tiltLabel, 0, 1)
         window.addLayout(self.tiltButtonsLayout, 1, 1)
@@ -814,14 +814,11 @@ class NewKeyframeWindow(QMainWindow):
         elif operator == "-":
             if self.__desiredHeight - changeValue >= 0:
                 self.__desiredHeight -= changeValue
-        self.heightLabel.setText(
-            "Desired Height: " + str(int(self.__desiredHeight / conversionValue))
-        )
 
         self.updateHeightLabel()
 
     def updateHeightLabel(self):
-        self.heightLabel.setText("Desired height: " + str(self.__desiredHeight / 400))
+        self.heightLabel.setText("Desired height: " + str(self.__desiredHeight / conversionValue))
 
     def backButtonClicked(self):
         widget.setCurrentWidget(secondScreen)
@@ -980,6 +977,9 @@ class EditKeyframeWindow(QMainWindow):
                 self.keyframesData = json.load(jsonFile)
         except FileNotFoundError:
             self.keyframesData = {}
+
+    def updateHeightLabel(self):
+        self.heightLabel.setText("Desired height: " + str(self.__desiredHeight / conversionValue))
 
     def tiltButtonsClicked(self, operator):
         if operator == "+":
