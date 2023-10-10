@@ -689,7 +689,8 @@ class NewKeyframeWindow(QMainWindow):
         window = QGridLayout()
 
         self.heightLabel = self.setupLabel("Desired height: 0", font, labelStyle)
-        self.heightButtonsLayout = self.setupHeightButtons(buttonStyle, size)
+        self.greatHeightButtonsLayout = self.setupHeightButtons(buttonStyle, size, 4000)
+        self.smallHeightButtonsLayout = self.setupHeightButtons(buttonStyle, size, 400)
         self.tiltLabel = self.setupLabel("Desired Tilt Angle: 0", font, labelStyle)
         self.tiltButtonsLayout = self.setupTiltButtons(buttonStyle, size)
         self.backButton = self.setupButton("BACK", self.backButtonClicked, buttonStyle, size)
@@ -700,10 +701,11 @@ class NewKeyframeWindow(QMainWindow):
         self.navButtonsLayout.addWidget(self.addButton)
 
         window.addWidget(self.heightLabel, 0, 0)
-        window.addLayout(self.heightButtonsLayout, 1, 0)
+        window.addLayout(self.greatHeightButtonsLayout, 1, 0)
+        window.addLayout(self.smallHeightButtonsLayout, 2, 0)
         window.addWidget(self.tiltLabel, 0, 1)
         window.addLayout(self.tiltButtonsLayout, 1, 1)
-        window.addLayout(self.navButtonsLayout, 2, 0, 1, 2)
+        window.addLayout(self.navButtonsLayout, 3, 0, 1, 2)
 
 
         widget = QWidget()
@@ -727,13 +729,17 @@ class NewKeyframeWindow(QMainWindow):
         return button
 
     # function for setting up tilt buttons
-    def setupHeightButtons(self, style, size):
-        heightAddButton = self.setupButton("+", lambda: self.heightButtonsClicked("+"), style, size)
-        heightSubButton = self.setupButton("-", lambda: self.heightButtonsClicked("-"), style, size)
+    def setupHeightButtons(self, style, size, changeValue):
+        heightAddButton = self.setupButton(
+            f'+ {changeValue/conversionValue}', lambda: self.heightButtonsClicked("+", changeValue), style, size
+        )
+        heightSubButton = self.setupButton(
+            f'- {changeValue/conversionValue}', lambda: self.heightButtonsClicked("-", changeValue), style, size
+        )
 
         heightButtonsLayout = QHBoxLayout()
-        heightButtonsLayout.addWidget(heightAddButton)
         heightButtonsLayout.addWidget(heightSubButton)
+        heightButtonsLayout.addWidget(heightAddButton)
 
         return heightButtonsLayout
 
@@ -742,8 +748,8 @@ class NewKeyframeWindow(QMainWindow):
         tiltSubButton = self.setupButton("-", lambda: self.tiltButtonsClicked("-"), style, size)
 
         tiltButtonsLayout = QHBoxLayout()
-        tiltButtonsLayout.addWidget(tiltAddButton)
         tiltButtonsLayout.addWidget(tiltSubButton)
+        tiltButtonsLayout.addWidget(tiltAddButton)
 
         return tiltButtonsLayout
 
@@ -762,40 +768,16 @@ class NewKeyframeWindow(QMainWindow):
             self.__desiredTilt -= 200
         self.tiltLabel.setText("Desired Tilt Angle: " + str(self.__desiredTilt))
 
-    def heightButtonsClicked(self, operator):
+    def heightButtonsClicked(self, operator, changeValue):
         if operator == "+":
-            if self.__desiredHeight < 72000:
-                current_time = time.time()
-
-                if not self.button_pressed:
-                    # First button press
-                    self.button_pressed = True
-                    self.previous_press = current_time
-                    self.counter = 1
-                    self.increment_amount = 400
-                    self.__desiredHeight += self.increment_amount
-                    self.updateHeightLabel()
-
-                    # Start a 5-second timer for multi-press
-                    self.timer.start(3000)
-                else:
-                    # Subsequent button presses
-                    time_difference = current_time - self.previous_press
-
-                    if time_difference <= 3:
-                        self.counter += 1
-
-                        if self.counter >= 8:
-                            self.increment_amount = 2000
-
-                        self.__desiredHeight += self.increment_amount
-                        self.updateHeightLabel()
-                        print("Incrementing by", self.increment_amount)
-                    else:
-                        self.reset_increment()
+            if self.__desiredHeight + changeValue <= 72000:
+                self.__desiredHeight += changeValue
         elif operator == "-":
-            if self.__desiredHeight > 0:
-                self.__desiredHeight -= 2000
+            if self.__desiredHeight - changeValue >= 0:
+                self.__desiredHeight -= changeValue
+        self.heightLabel.setText(
+            "Desired Height: " + str(int(self.__desiredHeight / conversionValue))
+        )
 
         self.updateHeightLabel()
 
