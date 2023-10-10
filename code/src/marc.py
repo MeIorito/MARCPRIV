@@ -179,6 +179,11 @@ class cycleThread(threading.Thread):
 
             # Total amount of keyframes
             totKeyframes = secondScreen.keyframeTable.rowCount()
+
+            # Rough estimate of the time it will take to complete the cycle in seconds fur fun ;) (not 100% accurate)
+            estimatedTime = 4 + (2 * totKeyframes) + ((self.__afterWaitTime + self.__beforeWaitTime) * totKeyframes * self.__picsPerKeyframe) + (1.7 * totKeyframes * self.__picsPerKeyframe) / 60
+            self.sendSlackMessage(f'Expected time: {estimatedTime} minutes')
+
             with open(settingsFile, "r") as jsonFile:
                 keyframesData = json.load(jsonFile)
 
