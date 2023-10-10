@@ -188,9 +188,6 @@ class cycleThread(threading.Thread):
                     if keyframesData is not None:
                         if firstScreen.getEmercenyFlag() != True:
 
-                            # Set slider and variables to height of current keyframe
-                            firstScreen.setSliderVal(keyframesData[f"Keyframe {i}"]["liftHeight"])
-                            firstScreen.setTiltLabelVal(keyframesData[f"Keyframe {i}"]["tiltDegree"])
 
                             firstScreen.moveToPosition(
                                 keyframesData[f"Keyframe {i}"]["liftHeight"]
@@ -198,6 +195,11 @@ class cycleThread(threading.Thread):
                             firstScreen.angleToPosition(
                                 keyframesData[f"Keyframe {i}"]["tiltDegree"]
                             )
+
+                            # Set slider and variables to height of current keyframe
+                            firstScreen.setSliderVal(keyframesData[f"Keyframe {i}"]["liftHeight"])
+                            firstScreen.setTiltLabelVal(keyframesData[f"Keyframe {i}"]["tiltDegree"])
+
                             for _ in range(self.__picsPerKeyframe):
                                 if not firstScreen.getEmercenyFlag():
                                     sleep(self.__beforeWaitTime)
@@ -238,15 +240,15 @@ class cycleThread(threading.Thread):
 
 class MainWindow(QMainWindow):
     # All important values
-    __sliderValue = 0
-    __waitBeforeTime = 0
-    __waitAfterTime = 2
-    __picsPerKeyframe = 20
-    __tiltValue = 0
-    __desiredTilt = 0
-    __heightValue = 0
-    __isCycleBusy = False
-    __emergencyFlag = False
+    __sliderValue = 0 # current slider value
+    __waitBeforeTime = 0 # Time to wait before picture is taken
+    __waitAfterTime = 2 # Time to wait after picture is taken
+    __picsPerKeyframe = 20 # Amount of pictures taken per keyframe
+    __tiltValue = 0 # current tilt value of scanner
+    __desiredTilt = 0 # desired tilt value of scanner
+    __heightValue = 0 # current height value of scanner
+    __isCycleBusy = False # Flag for if the cycle is busy
+    __emergencyFlag = False # Flag for if the emergency button has been pressed
 
     # Constructor
     def __init__(self):
@@ -256,7 +258,7 @@ class MainWindow(QMainWindow):
 
         self.initUI()
 
-    # mostly contains GUI design
+    # Contains GUI design
     def initUI(self):
         self.setWindowTitle("Your Application")
         self.setGeometry(100, 100, 600, 400)
@@ -422,6 +424,8 @@ class MainWindow(QMainWindow):
     # Calculates the steps needed to move to a certain position.
     def moveToPosition(self, goToPos):
         curLiftHeight = self.__heightValue
+        print("Huidige pos: " + curLiftHeight)
+        print("Gewilde pos: " + goToPos)
         stepsNeeded = int(goToPos) - curLiftHeight
         curLiftHeight += stepsNeeded
         if stepsNeeded <= 0:
@@ -430,6 +434,7 @@ class MainWindow(QMainWindow):
             motorLiftDown(stepsNeeded)
         elif stepsNeeded >= 0:
             motorLiftUp(stepsNeeded)
+        self.__heightValue = self.__sliderValue
 
     # Calculates the steps needed to move to a certain tilt angle.
     def angleToPosition(self, goToPos):
@@ -442,6 +447,7 @@ class MainWindow(QMainWindow):
             motorTiltCW(stepsNeeded)
         elif stepsNeeded >= 0:
             motorTiltCCW(stepsNeeded)
+        self.__tiltValue = self.__desiredTilt
 
     # Called when the slider is used, changes the label and the variable for the wanted lift height. /400 is for conversion from steps to cm
     def update_slider_label(self, value):
@@ -451,7 +457,6 @@ class MainWindow(QMainWindow):
     # Move MARC to wanted height and tilt, and sets the variables to those values
     def moveButtonClicked(self):
         self.moveToPosition(self.__sliderValue)
-        self.__heightValue = self.__sliderValue
 
     # Sets the tilt variable to 0 because of inconsistencies in the tilt motor
     def newZeroClicked(self):
@@ -467,7 +472,6 @@ class MainWindow(QMainWindow):
             self.__desiredTilt -= 200
         self.tiltLabel.setText("Tilt: " + str(self.__desiredTilt))
         self.angleToPosition(self.__desiredTilt)
-        self.__tiltValue = self.__desiredTilt
 
     # Depending on what the source and operator are, the correct value is added or subbed from the right time variable. Also refreshes the screen
     def timeButtonsClicked(self, source, operator):
@@ -1170,9 +1174,7 @@ fourthScreen = EditKeyframeWindow()
 widget.addWidget(fourthScreen)
 fifthScreen = KeyframeCalculator()
 widget.addWidget(fifthScreen)
-widget.setCurrentWidget(
-    firstScreen
-)  # setting the page that you want to load when application starts up.
+widget.setCurrentWidget(firstScreen)  # setting the page that you want to load when application starts up.
 widget.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
 widget.showMaximized()
 widget.show()
