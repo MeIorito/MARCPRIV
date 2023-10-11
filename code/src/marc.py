@@ -179,11 +179,7 @@ class cycleThread(threading.Thread):
 
             # Total amount of keyframes
             totKeyframes = secondScreen.keyframeTable.rowCount()
-
-            # Rough estimate of the time it will take to complete the cycle in seconds fur fun ;) (not 100% accurate)
-            estimatedTime = 4 + (2 * totKeyframes) + ((self.__afterWaitTime + self.__beforeWaitTime) * totKeyframes * self.__picsPerKeyframe) + (1.7 * totKeyframes * self.__picsPerKeyframe) / 60
-            self.sendSlackMessage(f'Expected time: {estimatedTime} minutes')
-
+            
             with open(settingsFile, "r") as jsonFile:
                 keyframesData = json.load(jsonFile)
 
@@ -193,14 +189,13 @@ class cycleThread(threading.Thread):
                     if keyframesData is not None:
                         if firstScreen.getEmercenyFlag() != True:
 
-
                             firstScreen.moveToPosition(
                                 keyframesData[f"Keyframe {i}"]["liftHeight"]
                             )
                             firstScreen.angleToPosition(
                                 keyframesData[f"Keyframe {i}"]["tiltDegree"]
                             )
-
+                            
                             # Set slider and variables to height of current keyframe
                             firstScreen.setSliderVal(keyframesData[f"Keyframe {i}"]["liftHeight"])
                             firstScreen.setTiltLabelVal(keyframesData[f"Keyframe {i}"]["tiltDegree"])
@@ -208,7 +203,7 @@ class cycleThread(threading.Thread):
                             for _ in range(self.__picsPerKeyframe):
                                 if not firstScreen.getEmercenyFlag():
                                     sleep(self.__beforeWaitTime)
-                                    # captureImage()
+                                    captureImage()
                                     sleep(self.__afterWaitTime)
                                     motorTableCW(self.__degreesPerRotation)
                                 else:
@@ -235,7 +230,12 @@ class cycleThread(threading.Thread):
 
             # Updates busy flag
             firstScreen.setCycleState(False)
-            cycleCounter["cycleCounter"] += 1
+            cycleCounter["CycleCounter"] += 1
+            
+            # Write the updated dictionary to the JSON file
+            with open(cycleCounterFile, "w") as jsonFile:
+                json.dump(cycleCounter, jsonFile)
+            
         else:
             text = "The cycle limit has been reached! Readjust the motors and reset the counter!"
 
@@ -245,15 +245,15 @@ class cycleThread(threading.Thread):
 
 class MainWindow(QMainWindow):
     # All important values
-    __sliderValue = 0 # current slider value
-    __waitBeforeTime = 0 # Time to wait before picture is taken
-    __waitAfterTime = 2 # Time to wait after picture is taken
-    __picsPerKeyframe = 20 # Amount of pictures taken per keyframe
-    __tiltValue = 0 # current tilt value of scanner
-    __desiredTilt = 0 # desired tilt value of scanner
-    __heightValue = 0 # current height value of scanner
-    __isCycleBusy = False # Flag for if the cycle is busy
-    __emergencyFlag = False # Flag for if the emergency button has been pressed
+    __sliderValue = 0
+    __waitBeforeTime = 1
+    __waitAfterTime = 0
+    __picsPerKeyframe = 20
+    __tiltValue = 0
+    __desiredTilt = 0
+    __heightValue = 0
+    __isCycleBusy = False
+    __emergencyFlag = False
 
     # Constructor
     def __init__(self):
@@ -263,7 +263,7 @@ class MainWindow(QMainWindow):
 
         self.initUI()
 
-    # Contains GUI design
+    # mostly contains GUI design
     def initUI(self):
         self.setWindowTitle("Your Application")
         self.setGeometry(100, 100, 600, 400)
@@ -273,8 +273,8 @@ class MainWindow(QMainWindow):
         self.slider = self.setupSlider()
         self.sliderLabel = self.setupLabel("Height: 0", font, labelStyle)
         self.tiltLabel = self.setupLabel("Desired Tilt Angle: 0", font, labelStyle)
-        self.waitBeforeLabel = self.setupLabel("Wait Before Time: 0", font, labelStyle)
-        self.waitAfterLabel = self.setupLabel("Wait After Time: 2", font, labelStyle)
+        self.waitBeforeLabel = self.setupLabel("Wait Before Time: 1", font, labelStyle)
+        self.waitAfterLabel = self.setupLabel("Wait After Time: 0", font, labelStyle)
         self.picsPerKeyframeLabel = self.setupLabel("Pictures: 20", font, labelStyle)
 
         self.tiltButtons = self.setupTiltButtons(buttonStyle, size)
@@ -287,6 +287,7 @@ class MainWindow(QMainWindow):
         self.moveButton = self.setupButton(
             "MOVE", self.moveButtonClicked, buttonStyle, size
         )
+        self.quickAddKeyframeButton = self.setupButton("QUICK KEYFRAME", self.quickAddKeyframe, buttonStyle, size)
         self.resetLiftButton = self.setupButton("RESET", self.reset, buttonStyle, size)
         self.startCycleButton = self.setupButton(
             "START CYCLE", self.cycle, buttonStyle, size
@@ -306,6 +307,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.newZeroButton, 2, 1)
         layout.addWidget(self.waitBeforeLabel, 3, 1)
         layout.addLayout(self.waitBeforeButtons, 4, 1)
+        layout.addWidget(self.quickAddKeyframeButton, 2, 2)
         layout.addWidget(self.waitAfterLabel, 3, 2)
         layout.addLayout(self.waitAfterButtons, 4, 2)
         layout.addWidget(self.resetLiftButton, 1, 3)
@@ -366,16 +368,16 @@ class MainWindow(QMainWindow):
 
     # function for setting up tilt buttons
     def setupTiltButtons(self, style, size):
-        tiltAddButton = self.setupButton(
-            "+", lambda: self.tiltButtonsClicked("+"), style, size
-        )
         tiltSubButton = self.setupButton(
             "-", lambda: self.tiltButtonsClicked("-"), style, size
         )
-
+        tiltAddButton = self.setupButton(
+            "+", lambda: self.tiltButtonsClicked("+"), style, size
+        )
+        
         tiltButtonsLayout = QHBoxLayout()
-        tiltButtonsLayout.addWidget(tiltAddButton)
         tiltButtonsLayout.addWidget(tiltSubButton)
+        tiltButtonsLayout.addWidget(tiltAddButton)
 
         return tiltButtonsLayout
 
@@ -389,8 +391,8 @@ class MainWindow(QMainWindow):
         )
 
         timeButtonsLayout = QHBoxLayout()
-        timeButtonsLayout.addWidget(addButton)
         timeButtonsLayout.addWidget(subButton)
+        timeButtonsLayout.addWidget(addButton)
 
         return timeButtonsLayout
 
@@ -404,8 +406,8 @@ class MainWindow(QMainWindow):
         )
 
         picsPerKeyframeButtonsLayout = QHBoxLayout()
-        picsPerKeyframeButtonsLayout.addWidget(addButton)
         picsPerKeyframeButtonsLayout.addWidget(subButton)
+        picsPerKeyframeButtonsLayout.addWidget(addButton)
 
         return picsPerKeyframeButtonsLayout
 
@@ -429,8 +431,6 @@ class MainWindow(QMainWindow):
     # Calculates the steps needed to move to a certain position.
     def moveToPosition(self, goToPos):
         curLiftHeight = self.__heightValue
-        print("Huidige pos: " + curLiftHeight)
-        print("Gewilde pos: " + goToPos)
         stepsNeeded = int(goToPos) - curLiftHeight
         curLiftHeight += stepsNeeded
         if stepsNeeded <= 0:
@@ -462,6 +462,9 @@ class MainWindow(QMainWindow):
     # Move MARC to wanted height and tilt, and sets the variables to those values
     def moveButtonClicked(self):
         self.moveToPosition(self.__sliderValue)
+        
+    def quickAddKeyframe(self):
+        thirdScreen.quickAddKeyframe(self.__sliderValue, self.__tiltValue)
 
     # Sets the tilt variable to 0 because of inconsistencies in the tilt motor
     def newZeroClicked(self):
@@ -842,7 +845,7 @@ class NewKeyframeWindow(QMainWindow):
         # calculates next keyrame number and creates the name
         nextKeyframe = secondScreen.keyframeTable.rowCount() + 1
         keyframeName = "Keyframe " + str(nextKeyframe)
-
+        print(nextKeyframe)
         # Gets wanted values from entries
         liftHeight = self.__desiredHeight
         tiltDegree = self.__desiredTilt
@@ -864,6 +867,30 @@ class NewKeyframeWindow(QMainWindow):
                 secondScreen.keyframeTable.setColumnWidth(column, 125)
         widget.setCurrentWidget(secondScreen)
 
+    def quickAddKeyframe(self, desiredHeight, desiredTilt):
+        # calculates next keyrame number and creates the name
+        nextKeyframe = secondScreen.keyframeTable.rowCount() + 1
+        keyframeName = "Keyframe " + str(nextKeyframe)
+
+        # Gets wanted values from entries
+        liftHeight = desiredHeight
+        tiltDegree = desiredTilt
+
+        # Adds the kyframe to the last spot
+        if keyframeName and liftHeight:
+            keyframeData = {
+                "liftHeight": int(liftHeight),
+                "tiltDegree": int(tiltDegree),
+                "timeAdded": QDateTime.currentDateTime().toString(
+                    "dd/MM/yyyy hh:mm:ss"
+                ),
+            }
+            secondScreen.keyframesData[keyframeName] = keyframeData
+            secondScreen.saveKeyframesData()
+            secondScreen.createKeyframeTable()
+            secondScreen.keyframeTable.setRowHeight(nextKeyframe - 1, 70)
+            for column in range(secondScreen.keyframeTable.columnCount()):
+                secondScreen.keyframeTable.setColumnWidth(column, 125)
 
 class EditKeyframeWindow(QMainWindow):
     __desiredHeight = 0
@@ -1179,7 +1206,9 @@ fourthScreen = EditKeyframeWindow()
 widget.addWidget(fourthScreen)
 fifthScreen = KeyframeCalculator()
 widget.addWidget(fifthScreen)
-widget.setCurrentWidget(firstScreen)  # setting the page that you want to load when application starts up.
+widget.setCurrentWidget(
+    firstScreen
+)  # setting the page that you want to load when application starts up.
 widget.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
 widget.showMaximized()
 widget.show()
