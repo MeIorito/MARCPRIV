@@ -281,6 +281,7 @@ class MainWindow(QMainWindow):
 
         self.moveButton = self.setupButton("MOVE", self.moveButtonClicked, buttonStyle, size)
         self.resetLiftButton = self.setupButton("RESET", self.reset, buttonStyle, size)
+        self.quickAddKeyframeButton = self.setupButton("QUICK ADD KEYFRAME", self.quickAddKeyframe, buttonStyle, size)
         self.startCycleButton = self.setupButton("START CYCLE", self.cycle, buttonStyle, size)
         self.keyframeButton = self.setupButton("KEYFRAME MENU", self.keyframeMenuClicked, buttonStyle, size)
         self.newZeroButton = self.setupButton("SET NEW ZERO", self.newZeroClicked, buttonStyle, size)
@@ -293,6 +294,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.newZeroButton, 2, 1)
         layout.addWidget(self.waitBeforeLabel, 3, 1)
         layout.addLayout(self.waitBeforeButtons, 4, 1)
+        layout.addWidget(self.quickAddKeyframeButton, 2, 2)
         layout.addWidget(self.waitAfterLabel, 3, 2)
         layout.addLayout(self.waitAfterButtons, 4, 2)
         layout.addWidget(self.resetLiftButton, 1, 3)
@@ -424,6 +426,10 @@ class MainWindow(QMainWindow):
     def moveButtonClicked(self):
         # TODO: Implement logic for the MOVE button
         print("LIFT HEIGHT SET TO:", self.__sliderValue, "CM")
+
+    # Called when the reset button is clicked, points to other function
+    def quickAddKeyframe(self):
+        thirdScreen.quickAddKeyframe(self.__sliderValue, self.__tiltValue)
 
     # Depending on which button got sent here it adds or subs 20 from the tilt variable. Add button has operator = + and sub has operator = -
     def tiltButtonsClicked(self, operator):
@@ -826,6 +832,30 @@ class NewKeyframeWindow(QMainWindow):
                 secondScreen.keyframeTable.setColumnWidth(column, 110)
         widget.setCurrentWidget(secondScreen)
 
+    def quickAddKeyframe(self, desiredHeight, desiredTilt):
+        # calculates next keyrame number and creates the name
+        nextKeyframe = secondScreen.keyframeTable.rowCount() + 1
+        keyframeName = "Keyframe " + str(nextKeyframe)
+
+        # Gets wanted values from entries
+        liftHeight = desiredHeight
+        tiltDegree = desiredTilt
+
+        # Adds the kyframe to the last spot
+        if keyframeName and liftHeight:
+            keyframeData = {
+                "liftHeight": int(liftHeight),
+                "tiltDegree": int(tiltDegree),
+                "timeAdded": QDateTime.currentDateTime().toString(
+                    "dd/MM/yyyy hh:mm:ss"
+                ),
+            }
+            secondScreen.keyframesData[keyframeName] = keyframeData
+            secondScreen.saveKeyframesData()
+            secondScreen.createKeyframeTable()
+            secondScreen.keyframeTable.setRowHeight(nextKeyframe - 1, 70)
+            for column in range(secondScreen.keyframeTable.columnCount()):
+                secondScreen.keyframeTable.setColumnWidth(column, 110)
 
 class EditKeyframeWindow(QMainWindow):
     __desiredHeight = 0
