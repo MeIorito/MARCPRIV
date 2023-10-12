@@ -14,10 +14,11 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
 
-# Constants | slack auth | settings file |cycleCounterFile | font size | size
+# Constants | slack auth | settings file | cycleCounterFile | slack channel name  | font size | button size
 slackToken = "xoxb-5867825218247-5875744156982-TuLlFjvAptQvxyraY4ZQ4Vm6"
 settingsFile = "settingsCustom.txt"
 cycleCounterFile = "cycleCounter.txt"
+slackChannel = "testbot"
 font = QFont()
 font.setPointSize(11)
 size = (100, 80)
@@ -163,7 +164,7 @@ class cycleThread(threading.Thread):
     def sendSlackMessage(self, text):
         try:
             client = slack.WebClient(token=slackToken)
-            client.chat_postMessage(channel="#testbot", text=text)
+            client.chat_postMessage(channel=slackChannel, text=text)
         except:
             print("Oops! Something went wrong with the connection to Slack!")
 
@@ -892,6 +893,7 @@ class NewKeyframeWindow(QMainWindow):
             for column in range(secondScreen.keyframeTable.columnCount()):
                 secondScreen.keyframeTable.setColumnWidth(column, 125)
 
+
 class EditKeyframeWindow(QMainWindow):
     __desiredHeight = 0
     __desiredTilt = 0
@@ -1206,9 +1208,8 @@ fourthScreen = EditKeyframeWindow()
 widget.addWidget(fourthScreen)
 fifthScreen = KeyframeCalculator()
 widget.addWidget(fifthScreen)
-widget.setCurrentWidget(
-    firstScreen
-)  # setting the page that you want to load when application starts up.
+# setting the page that you want to load when application starts up
+widget.setCurrentWidget(firstScreen).
 widget.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
 widget.showMaximized()
 widget.show()
