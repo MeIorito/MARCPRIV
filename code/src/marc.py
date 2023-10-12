@@ -1209,7 +1209,7 @@ widget.addWidget(fourthScreen)
 fifthScreen = KeyframeCalculator()
 widget.addWidget(fifthScreen)
 # setting the page that you want to load when application starts up
-widget.setCurrentWidget(firstScreen).
+widget.setCurrentWidget(firstScreen)
 widget.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
 widget.showMaximized()
 widget.show()
