@@ -249,7 +249,7 @@ class MainWindow(QMainWindow):
     __sliderValue = 0
     __waitBeforeTime = 1
     __waitAfterTime = 0
-    __picsPerKeyframe = 20
+    __picsPerKeyframe = 25
     __tiltValue = 0
     __desiredTilt = 0
     __heightValue = 0
@@ -272,11 +272,11 @@ class MainWindow(QMainWindow):
         layout = QGridLayout()
 
         self.slider = self.setupSlider()
-        self.sliderLabel = self.setupLabel("Height: 0", font, labelStyle)
-        self.tiltLabel = self.setupLabel("Desired Tilt Angle: 0", font, labelStyle)
-        self.waitBeforeLabel = self.setupLabel("Wait Before Time: 1", font, labelStyle)
-        self.waitAfterLabel = self.setupLabel("Wait After Time: 0", font, labelStyle)
-        self.picsPerKeyframeLabel = self.setupLabel("Pictures: 20", font, labelStyle)
+        self.sliderLabel = self.setupLabel(f'Height: {self.__heightValue}', font, labelStyle)
+        self.tiltLabel = self.setupLabel(f'Tilt: {self.__tiltValue}', font, labelStyle)
+        self.waitBeforeLabel = self.setupLabel(f'Wait Before Time: {self.__waitBeforeTime}', font, labelStyle)
+        self.waitAfterLabel = self.setupLabel(f'Wait After Time: {self.__waitAfterTime}', font, labelStyle)
+        self.picsPerKeyframeLabel = self.setupLabel(f'Pictures: {self.__picsPerKeyframe}', font, labelStyle)
 
         self.tiltButtons = self.setupTiltButtons(buttonStyle, size)
         self.waitBeforeButtons = self.setupTimeButtons("waitBefore", buttonStyle, size)
@@ -695,10 +695,10 @@ class NewKeyframeWindow(QMainWindow):
         window = QGridLayout()
 
         # create the necessary widgets
-        self.heightLabel = self.setupLabel("Desired height: 0", font, labelStyle)
+        self.heightLabel = self.setupLabel(f'Desired height: {self.__desiredHeight}', font, labelStyle)
         self.greatHeightButtonsLayout = self.setupHeightButtons(buttonStyle, size, 4000)
         self.smallHeightButtonsLayout = self.setupHeightButtons(buttonStyle, size, 400)
-        self.tiltLabel = self.setupLabel("Desired Tilt Angle: 0", font, labelStyle)
+        self.tiltLabel = self.setupLabel(f'Desired Tilt Angle: {self.__desiredTilt}', font, labelStyle)
         self.tiltButtonsLayout = self.setupTiltButtons(buttonStyle, size)
         self.backButton = self.setupButton("BACK", self.backButtonClicked, buttonStyle, size)
         self.addButton = self.setupButton("ADD KEYFRAME", self.addKeyframeClicked, buttonStyle, size)
@@ -859,10 +859,10 @@ class EditKeyframeWindow(QMainWindow):
 
         window = QGridLayout()
 
-        self.heightLabel = self.setupLabel("Desired height: 0", font, labelStyle)
+        self.heightLabel = self.setupLabel(f'Desired height: {self.__desiredHeight}', font, labelStyle)
         self.greatHeightButtonsLayout = self.setupHeightButtons(buttonStyle, size, 4000)
         self.smallHeightButtonsLayout = self.setupHeightButtons(buttonStyle, size, 400)
-        self.tiltLabel = self.setupLabel("Desired Tilt Angle: 0", font, labelStyle)
+        self.tiltLabel = self.setupLabel(f'Desired Tilt Angle: {self.__desiredTilt}', font, labelStyle)
         self.tiltButtonsLayout = self.setupTiltButtons(buttonStyle, size)
         self.backButton = self.setupButton("BACK", self.backButtonClicked, buttonStyle, size)
         self.editButton = self.setupButton("EDIT KEYFRAME", self.editKeyframeClicked, buttonStyle, size)
