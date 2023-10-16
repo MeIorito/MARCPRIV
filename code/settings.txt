@@ -1,37 +1,67 @@
 {
     "Keyframe 1": {
-        "liftHeight": 32000,
-        "tiltDegree": 2396,
-        "timeAdded": "05/10/2023 15:23:40"
+        "liftHeight": 37200,
+        "tiltDegree": 2807,
+        "timeAdded": "16/10/2023 12:02:14"
     },
     "Keyframe 2": {
-        "liftHeight": 36000,
-        "tiltDegree": 1252,
-        "timeAdded": "05/10/2023 15:23:40"
+        "liftHeight": 4000,
+        "tiltDegree": 200,
+        "timeAdded": "16/10/2023 12:02:37"
     },
     "Keyframe 3": {
-        "liftHeight": 40000,
-        "tiltDegree": 0,
-        "timeAdded": "05/10/2023 15:23:40"
+        "liftHeight": 4000,
+        "tiltDegree": 200,
+        "timeAdded": "16/10/2023 12:02:45"
     },
     "Keyframe 4": {
-        "liftHeight": 44000,
-        "tiltDegree": -1252,
-        "timeAdded": "05/10/2023 15:23:40"
+        "liftHeight": 4000,
+        "tiltDegree": 200,
+        "timeAdded": "16/10/2023 12:02:47"
     },
     "Keyframe 5": {
-        "liftHeight": 48000,
-        "tiltDegree": -2396,
-        "timeAdded": "05/10/2023 15:23:40"
+        "liftHeight": 4000,
+        "tiltDegree": 200,
+        "timeAdded": "16/10/2023 12:02:48"
     },
     "Keyframe 6": {
-        "liftHeight": 52000,
-        "tiltDegree": -3369,
-        "timeAdded": "05/10/2023 15:23:40"
+        "liftHeight": 4000,
+        "tiltDegree": 200,
+        "timeAdded": "16/10/2023 12:02:49"
     },
     "Keyframe 7": {
-        "liftHeight": 56000,
-        "tiltDegree": -4163,
-        "timeAdded": "05/10/2023 15:23:40"
+        "liftHeight": 4000,
+        "tiltDegree": 200,
+        "timeAdded": "16/10/2023 12:02:51"
+    },
+    "Keyframe 8": {
+        "liftHeight": 46800,
+        "tiltDegree": 0,
+        "timeAdded": "16/10/2023 12:02:14"
+    },
+    "Keyframe 9": {
+        "liftHeight": 51600,
+        "tiltDegree": -1493,
+        "timeAdded": "16/10/2023 12:02:14"
+    },
+    "Keyframe 10": {
+        "liftHeight": 56400,
+        "tiltDegree": -2807,
+        "timeAdded": "16/10/2023 12:02:14"
+    },
+    "Keyframe 11": {
+        "liftHeight": 16000,
+        "tiltDegree": 600,
+        "timeAdded": "16/10/2023 13:07:40"
+    },
+    "Keyframe 12": {
+        "liftHeight": 36000,
+        "tiltDegree": 1600,
+        "timeAdded": "16/10/2023 13:07:49"
+    },
+    "Keyframe 13": {
+        "liftHeight": 64800,
+        "tiltDegree": 2200,
+        "timeAdded": "16/10/2023 13:07:54"
     }
 }

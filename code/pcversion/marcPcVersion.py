@@ -668,7 +668,7 @@ class KeyframeListWindow(QMainWindow):
         currentKeyframes = dict(self.keyframesData)
         self.keyframesData.clear()
 
-        for i, (keyframe, data) in enumerate(sorted(currentKeyframes.items())):
+        for i, (keyframe, data) in enumerate(currentKeyframes.items()):
             newKeyframeName = f"Keyframe {i + 1}"
             self.keyframesData[newKeyframeName] = data
 
