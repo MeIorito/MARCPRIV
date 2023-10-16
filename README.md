@@ -6,7 +6,6 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Hardware](#hardware)
-  - [Neseccary tools](#tools-necessary)
   - [Expected commitment time](#expected-commitment-time)
   - [Get started](#getting-started)
 - [Software](#software)
@@ -96,23 +95,16 @@ See the scanner movents here:
 
 # Hardware
 
-  ## Tools necessary
-
-  - x
-  - x
-  - x
-  - x
-
   ## Expected commitment time
 
-  In our experience, the marc takes xxx hours to build. Of cource your skill level has a great impact on this, but with the documentation everyone can do it.
+  In our experience, the marc takes 5 hours to build. Of cource your skill level has a huge impact on this, but with the documentation everyone can do it.
 
   ## Getting started
 
   - **Step 1**: Order the neseccary parts [here]().
-  - **Step 2**: Build the frame for MARC.
+  - **Step 2**: Build the frame for MARC using [this]() help file.
   - **Step 3**: Connect all the electronics using [this]() schematic.
-  - **Step 4**: Combine the frame with the electronics
+  - **Step 4**: Combine the frame with the electronics.
   
 # Software
   ## Getting Started
@@ -158,7 +150,7 @@ objDistance = <"yourDistanceInCm">
   
   1. Launch the application.
   2. Ensure the scanner is at its lowest position and the camera is level.
-  3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete. (see [UI](#UI))
+  3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete. Or use the "QUICK KEYFRAME" button to add the current height and tilt to a keyframe.(see [UI](#UI))
   4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
   5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
   6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
