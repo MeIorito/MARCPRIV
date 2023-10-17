@@ -315,7 +315,6 @@ class MainWindow(QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
-        
         layout.setColumnStretch(0, 0)
 
         widget = QWidget()
@@ -443,7 +442,7 @@ class MainWindow(QMainWindow):
     def newZeroClicked(self):
         self.__tiltValue = 0
         self.__desiredTilt = 0
-        self.tiltLabel.setText("Desired Tilt Angle: " + str(self.__tiltValue))
+        self.tiltLabel.setText("Tilt: " + str(self.__tiltValue))
 
     # Depending on which button got sent here it adds or subs 20 from the tilt variable. Add button has operator = + and sub has operator = -
     def tiltButtonsClicked(self, operator):
