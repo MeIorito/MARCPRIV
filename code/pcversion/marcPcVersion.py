@@ -857,6 +857,7 @@ class NewKeyframeWindow(QMainWindow):
             for column in range(secondScreen.keyframeTable.columnCount()):
                 secondScreen.keyframeTable.setColumnWidth(column, 110)
 
+
 class EditKeyframeWindow(QMainWindow):
     __desiredHeight = 0
     __desiredTilt = 0

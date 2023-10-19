@@ -432,7 +432,8 @@ class MainWindow(QMainWindow):
 
     # Move MARC to wanted height and tilt, and sets the variables to those values
     def moveButtonClicked(self):
-        self.moveToPosition(self.__sliderValue)
+        if not self.__isCycleBusy:
+            self.moveToPosition(self.__sliderValue)
         
     # Adds a keyframe to the keyframe list via another class function 
     def quickAddKeyframe(self):
@@ -526,13 +527,14 @@ class MainWindow(QMainWindow):
 
     # Resets the height ans til to 0
     def reset(self):
-        self.angleToPosition(0)
-        self.__tiltValue = 0
-        self.setTiltLabelVal(self.__tiltValue)
-        self.moveToPosition(0)
-        self.__sliderValue = 0
-        self.__heightValue = 0
-        self.setSliderVal(self.__heightValue)
+        if not self.__isCycleBusy:
+            self.angleToPosition(0)
+            self.__tiltValue = 0
+            self.setTiltLabelVal(self.__tiltValue)
+            self.moveToPosition(0)
+            self.__sliderValue = 0
+            self.__heightValue = 0
+            self.setSliderVal(self.__heightValue)
 
 
 class KeyframeListWindow(QMainWindow):
