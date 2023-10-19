@@ -1184,7 +1184,3 @@ widget.setCurrentWidget(firstScreen)
 widget.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
 widget.show()
 app.exec()
-
-# TODO Pause cycle thread instead of stopping
-# TODO Make flags for cycle thread emergency stop
-# TODO Implement the auto keyframe system, test first TODO
