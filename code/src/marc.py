@@ -22,6 +22,7 @@ slackChannel = "testbot"
 font = QFont()
 font.setPointSize(11)
 size = (100, 80)
+turntableSpeeds = [0.002, 0.0009, 0.0005]
 
 objDistance = 43  # Distance between object and camera in cm, used for tilt calculations
 totHeight = 180  # Total height of the lift
@@ -159,6 +160,7 @@ class cycleThread(threading.Thread):
         self.__beforeWaitTime = waitBeforeTime
         self.__afterWaitTime = waitAfterTime
         self.__picsPerKeyframe = picsPerKeyframe
+        self.__turntableSpeed = sixthScreen.turntableSpeed
         self.__degreesPerRotation = int(64000 / self.__picsPerKeyframe)
 
     def sendSlackMessage(self, text):
@@ -206,7 +208,7 @@ class cycleThread(threading.Thread):
                                     sleep(self.__beforeWaitTime)
                                     captureImage()
                                     sleep(self.__afterWaitTime)
-                                    motorTableCW(self.__degreesPerRotation)
+                                    motorTableCW(self.__degreesPerRotation, self.__turntableSpeed)
                                 else:
                                     text = "The emergency button has been pressed!"
                                     break
@@ -283,12 +285,12 @@ class MainWindow(QMainWindow):
         self.waitBeforeButtons = self.setupTimeButtons("waitBefore", buttonStyle, size)
         self.waitAfterButtons = self.setupTimeButtons("waitAfter", buttonStyle, size)
         self.picsPerKeyframeButtons = self.setupPicsPerKeyframeButtons(buttonStyle, size)
+        self.menuButtons = self.setupMenuButtons(buttonStyle, size)
 
         self.moveButton = self.setupButton("MOVE", self.moveButtonClicked, buttonStyle, size)
         self.quickAddKeyframeButton = self.setupButton("QUICK KEYFRAME", self.quickAddKeyframe, buttonStyle, size)
         self.resetLiftButton = self.setupButton("RESET", self.reset, buttonStyle, size)
         self.startCycleButton = self.setupButton("START CYCLE", self.cycle, buttonStyle, size)
-        self.keyframeButton = self.setupButton("KEYFRAME MENU", self.keyframeMenuClicked, buttonStyle, size)
         self.newZeroButton = self.setupButton("SET NEW ZERO", self.newZeroClicked, buttonStyle, size)
         self.emergencyStopButton = self.setupEmergencyStopButton(buttonStyle, size)
 
@@ -308,7 +310,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.picsPerKeyframeLabel, 0, 2)
         layout.addLayout(self.picsPerKeyframeButtons, 1, 2, 1, 1)
         layout.addWidget(self.moveButton, 4, 3)
-        layout.addWidget(self.keyframeButton, 0, 3)
+        layout.addLayout(self.menuButtons, 0, 3)
         layout.addWidget(self.emergencyStopButton, 3, 3)
 
         # Sets the layout to the window
@@ -360,6 +362,17 @@ class MainWindow(QMainWindow):
         tiltButtonsLayout.addWidget(tiltAddButton)
 
         return tiltButtonsLayout
+    
+    # function for setting up menu buttons
+    def setupMenuButtons(self, style, size):
+        self.keyframeButton = self.setupButton("KFM", self.keyframeMenuClicked, style, size)
+        self.turntableButton = self.setupButton("TTM", self.turntableMenuClicked, style, size)
+
+        menuButtonsLayout = QHBoxLayout()
+        menuButtonsLayout.addWidget(self.keyframeButton)
+        menuButtonsLayout.addWidget(self.turntableButton)
+
+        return menuButtonsLayout
 
     # function for setting up time buttons
     def setupTimeButtons(self, time_type, style, size):
@@ -480,6 +493,9 @@ class MainWindow(QMainWindow):
     # Changes screen
     def keyframeMenuClicked(self):
         widget.setCurrentWidget(secondScreen)
+
+    def turntableMenuClicked(self):
+        widget.setCurrentWidget(sixthScreen)
 
     # Sets emergency flag to True or false accordingly and changes style of emergency button
     def emergencyStopClicked(self):
@@ -1138,6 +1154,72 @@ class KeyframeCalculator(QMainWindow):
         self.__objHeight = value
 
 
+class TurntableMenuWindow(QMainWindow):
+    turntableSpeed = 0.0009
+
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Turntable Menu")
+        self.setStyleSheet("background-color: #343541;")
+        self.setGeometry(100, 100, 800, 400)
+
+        window = QGridLayout()
+
+        self.speedLabel = self.setupLabel(f'Turntable speed: {self.turntableSpeed}', font, labelStyle)
+        self.speedButtonsLayout = self.setupSpeedButtons(buttonStyle, size)
+        self.backButton = self.setupButton("BACK", self.back, buttonStyle, size)
+
+        window.addWidget(self.speedLabel, 0, 1)
+        window.addLayout(self.speedButtonsLayout, 1, 1)
+        window.addWidget(self.backButton, 2, 1)
+
+        widget = QWidget()
+        widget.setLayout(window)
+        self.setCentralWidget(widget)
+
+    # generic function for setting up labels
+    def setupLabel(self, text, font, style):
+        label = QLabel(text)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label.setFont(font)
+        label.setStyleSheet(style)
+        return label
+    
+    # generic function for setting up buttons
+    def setupButton(self, text, slot, style, size):
+        button = QPushButton(text)
+        button.clicked.connect(slot)
+        button.setStyleSheet(style)
+        button.setMinimumSize(size[0], size[1])
+        return button
+    
+    # function for setting up speed options. Slow, medium and fast
+    def setupSpeedButtons(self, style, size):
+        slowButton = self.setupButton('Slow', lambda: self.speedButtonsClicked('Slow'), style, size)
+        mediumButton = self.setupButton('Medium', lambda: self.speedButtonsClicked('Medium'), style, size)
+        fastButton = self.setupButton('Fast', lambda: self.speedButtonsClicked('Fast'), style, size)
+
+        speedButtonsLayout = QHBoxLayout()
+        speedButtonsLayout.addWidget(slowButton)
+        speedButtonsLayout.addWidget(mediumButton)
+        speedButtonsLayout.addWidget(fastButton)
+
+        return speedButtonsLayout
+    
+    def speedButtonsClicked(self, speed):
+        self.speedLabel.setText(f'Turntable speed: {self.turntableSpeed}')
+
+        if speed == 'Slow':
+            self.turntableSpeed = turntableSpeeds[0]
+        elif speed == 'Medium':
+            self.turntableSpeed = turntableSpeeds[1]
+        elif speed == 'Fast':
+            self.turntableSpeed = turntableSpeeds[2]
+
+    def back(self):
+        widget.setCurrentWidget(firstScreen)
+
 app = QApplication(sys.argv)
 widget = QStackedWidget()
 firstScreen = MainWindow()
@@ -1150,6 +1232,8 @@ fourthScreen = EditKeyframeWindow()
 widget.addWidget(fourthScreen)
 fifthScreen = KeyframeCalculator()
 widget.addWidget(fifthScreen)
+sixthScreen = TurntableMenuWindow()
+widget.addWidget(sixthScreen)
 # setting the page that you want to load when application starts up
 widget.setCurrentWidget(firstScreen)
 widget.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
