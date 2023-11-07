@@ -83,16 +83,16 @@ def motorLiftDown(distance): # Move the Lift <distance> steps down; 400 steps/cm
         GPIO.output(STEPLIFT,GPIO.LOW)
         sleep(calculateEase(x, distance))
 
-def motorTableCW(distance): # Move the Turntable <distance> steps clockwise; 88.888- steps/degree
+def motorTableCW(distance, waitTime): # Move the Turntable <distance> steps clockwise; 88.888- steps/degree
     GPIO.output(DIRTABLE,CW)
     for x in range(distance):
         if GPIO.input(EMERGENCY) != False:
             print("Emergency triggered")
             break
         GPIO.output(STEPTABLE,GPIO.HIGH)
-        sleep(TABLESPEED)
+        sleep(waitTime)
         GPIO.output(STEPTABLE,GPIO.LOW)
-        sleep(TABLESPEED)
+        sleep(waitTime)
 
 def motorTableCCW(distance): # Move the Turntable <distance> steps counter clockwise; 88.888- steps/degree
     GPIO.output(DIRTABLE,CCW)
