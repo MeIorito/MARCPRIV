@@ -159,7 +159,7 @@ class cycleThread(threading.Thread):
         self.__beforeWaitTime = waitBeforeTime
         self.__afterWaitTime = waitAfterTime
         self.__picsPerKeyframe = picsPerKeyframe
-        self.__degreesPerRotation = int(32000 / self.__picsPerKeyframe)
+        self.__degreesPerRotation = int(64000 / self.__picsPerKeyframe)
 
     def sendSlackMessage(self, text):
         try:
@@ -180,7 +180,7 @@ class cycleThread(threading.Thread):
 
             # Total amount of keyframes
             totKeyframes = secondScreen.keyframeTable.rowCount()
-            
+           
             with open(settingsFile, "r") as jsonFile:
                 keyframesData = json.load(jsonFile)
 
@@ -196,7 +196,7 @@ class cycleThread(threading.Thread):
                             firstScreen.angleToPosition(
                                 keyframesData[f"Keyframe {i}"]["tiltDegree"]
                             )
-                            
+                           
                             # Set slider and variables to height of current keyframe
                             firstScreen.setSliderVal(keyframesData[f"Keyframe {i}"]["liftHeight"])
                             firstScreen.setTiltLabelVal(keyframesData[f"Keyframe {i}"]["tiltDegree"])
@@ -212,7 +212,7 @@ class cycleThread(threading.Thread):
                                     break
                         else:
                             break
-                
+               
                         text = (
                             str(random.choice(self.__marcMessages))
                             + " It took: "
@@ -224,19 +224,20 @@ class cycleThread(threading.Thread):
                     break
                 self.sendSlackMessage(f'Keyframe {i} is done! Keyframes to go: {totKeyframes - i}')
 
-            # Resets the motors and the counter
-            firstScreen.reset()
             # Sends message to Slack workspace
             self.sendSlackMessage(text)
 
             # Updates busy flag
             firstScreen.setCycleState(False)
             cycleCounter["CycleCounter"] += 1
-            
+           
+            # Resets the motors and the counter
+            firstScreen.reset()
+           
             # Write the updated dictionary to the JSON file
             with open(cycleCounterFile, "w") as jsonFile:
                 json.dump(cycleCounter, jsonFile)
-            
+           
         else:
             text = "The cycle limit has been reached! Readjust the motors and reset the counter!"
 
@@ -291,7 +292,7 @@ class MainWindow(QMainWindow):
         self.newZeroButton = self.setupButton("SET NEW ZERO", self.newZeroClicked, buttonStyle, size)
         self.emergencyStopButton = self.setupEmergencyStopButton(buttonStyle, size)
 
-        # Adds all the widgets to the layout 
+        # Adds all the widgets to the layout
         layout.addWidget(self.slider, 0, 0, 5, 1)
         layout.addWidget(self.sliderLabel, 5, 0)
         layout.addWidget(self.tiltLabel, 0, 1)
@@ -353,7 +354,7 @@ class MainWindow(QMainWindow):
     def setupTiltButtons(self, style, size):
         tiltSubButton = self.setupButton("-", lambda: self.tiltButtonsClicked("-"), style, size)
         tiltAddButton = self.setupButton("+", lambda: self.tiltButtonsClicked("+"), style, size)
-        
+       
         tiltButtonsLayout = QHBoxLayout()
         tiltButtonsLayout.addWidget(tiltSubButton)
         tiltButtonsLayout.addWidget(tiltAddButton)
@@ -434,8 +435,8 @@ class MainWindow(QMainWindow):
     def moveButtonClicked(self):
         if not self.__isCycleBusy:
             self.moveToPosition(self.__sliderValue)
-        
-    # Adds a keyframe to the keyframe list via another class function 
+       
+    # Adds a keyframe to the keyframe list via another class function
     def quickAddKeyframe(self):
         thirdScreen.quickAddKeyframe(self.__sliderValue, self.__tiltValue)
 
@@ -447,12 +448,13 @@ class MainWindow(QMainWindow):
 
     # Depending on which button got sent here it adds or subs 20 from the tilt variable. Add button has operator = + and sub has operator = -
     def tiltButtonsClicked(self, operator):
-        if operator == "+":
-            self.__desiredTilt += 200
-        elif operator == "-":
-            self.__desiredTilt -= 200
-        self.tiltLabel.setText("Tilt: " + str(self.__desiredTilt))
-        self.angleToPosition(self.__desiredTilt)
+        if self.__isCycleBusy == False:
+            if operator == "+":
+                self.__desiredTilt += 200
+            elif operator == "-":
+                self.__desiredTilt -= 200
+            self.tiltLabel.setText("Tilt: " + str(self.__desiredTilt))
+            self.angleToPosition(self.__desiredTilt)
 
     # Depending on what the source and operator are, the correct value is added or subbed from the right time variable. Also refreshes the screen
     def timeButtonsClicked(self, source, operator):
@@ -543,7 +545,7 @@ class KeyframeListWindow(QMainWindow):
 
         self.setWindowTitle("Keyframe List")
         self.setStyleSheet("background-color: #343541;")
-        self.setGeometry(100, 100, 800, 400) 
+        self.setGeometry(100, 100, 800, 400)
 
         self.keyframesDataFile = settingsFile
         self.loadKeyframesData()

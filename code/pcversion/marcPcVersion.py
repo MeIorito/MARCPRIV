@@ -278,12 +278,12 @@ class MainWindow(QMainWindow):
         self.waitBeforeButtons = self.setupTimeButtons("waitBefore", buttonStyle, size)
         self.waitAfterButtons = self.setupTimeButtons("waitAfter", buttonStyle, size)
         self.picsPerKeyframeButtons = self.setupPicsPerKeyframeButtons(buttonStyle, size)
+        self.menuButtons = self.setupMenuButtons(buttonStyle, size)
 
         self.moveButton = self.setupButton("MOVE", self.moveButtonClicked, buttonStyle, size)
         self.resetLiftButton = self.setupButton("RESET", self.reset, buttonStyle, size)
         self.quickAddKeyframeButton = self.setupButton("QUICK ADD KEYFRAME", self.quickAddKeyframe, buttonStyle, size)
         self.startCycleButton = self.setupButton("START CYCLE", self.cycle, buttonStyle, size)
-        self.keyframeButton = self.setupButton("KEYFRAME MENU", self.keyframeMenuClicked, buttonStyle, size)
         self.newZeroButton = self.setupButton("SET NEW ZERO", self.newZeroClicked, buttonStyle, size)
         self.emergencyStopButton = self.setupEmergencyStopButton(buttonStyle, size)
 
@@ -302,7 +302,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.picsPerKeyframeLabel, 0, 2)
         layout.addLayout(self.picsPerKeyframeButtons, 1, 2, 1, 1)
         layout.addWidget(self.moveButton, 4, 3)
-        layout.addWidget(self.keyframeButton, 0, 3)
+        layout.addLayout(self.menuButtons, 0, 3)
         layout.addWidget(self.emergencyStopButton, 3, 3)
 
         central_widget = QWidget()
@@ -332,6 +332,16 @@ class MainWindow(QMainWindow):
         label.setFont(font)
         label.setStyleSheet(style)
         return label
+
+    def setupMenuButtons(self, style, size):
+        self.keyframeButton = self.setupButton("KFM", self.keyframeMenuClicked, style, size)
+        self.turntableButton = self.setupButton("TTM", self.turntableMenuClicked, style, size)
+
+        menuButtonsLayout = QHBoxLayout()
+        menuButtonsLayout.addWidget(self.keyframeButton)
+        menuButtonsLayout.addWidget(self.turntableButton)
+
+        return menuButtonsLayout
 
     def setupButtonStyle(self):
         return """
@@ -464,6 +474,9 @@ class MainWindow(QMainWindow):
     # Changes screen
     def keyframeMenuClicked(self):
         widget.setCurrentWidget(secondScreen)
+
+    def turntableMenuClicked(self):
+        widget.setCurrentWidget(sixthScreen)
 
     def emergencyStopClicked(self):
         if self.__emergencyFlag == False:
@@ -1167,6 +1180,66 @@ class KeyframeCalculator(QMainWindow):
         self.__objHeight = value
 
 
+class TurntableMenuWindow(QMainWindow):
+    turntableSpeed = "Medium"
+
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Turntable Menu")
+        self.setStyleSheet("background-color: #343541;")
+        self.setGeometry(100, 100, 800, 400)
+
+        window = QGridLayout()
+
+        self.speedLabel = self.setupLabel(f'Turntable speed: {self.turntableSpeed}', font, labelStyle)
+        self.speedButtonsLayout = self.setupSpeedButtons(buttonStyle, size)
+        self.backButton = self.setupButton("BACK", self.back, buttonStyle, size)
+
+        window.addWidget(self.speedLabel, 0, 1)
+        window.addLayout(self.speedButtonsLayout, 1, 1)
+        window.addWidget(self.backButton, 2, 1)
+
+        widget = QWidget()
+        widget.setLayout(window)
+        self.setCentralWidget(widget)
+
+    # generic function for setting up labels
+    def setupLabel(self, text, font, style):
+        label = QLabel(text)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label.setFont(font)
+        label.setStyleSheet(style)
+        return label
+    
+    # generic function for setting up buttons
+    def setupButton(self, text, slot, style, size):
+        button = QPushButton(text)
+        button.clicked.connect(slot)
+        button.setStyleSheet(style)
+        button.setMinimumSize(size[0], size[1])
+        return button
+    
+    # function for setting up speed options. Slow, medium and fast
+    def setupSpeedButtons(self, style, size):
+        slowButton = self.setupButton('Slow', lambda: self.speedButtonsClicked('Slow'), style, size)
+        mediumButton = self.setupButton('Medium', lambda: self.speedButtonsClicked('Medium'), style, size)
+        fastButton = self.setupButton('Fast', lambda: self.speedButtonsClicked('Fast'), style, size)
+
+        speedButtonsLayout = QHBoxLayout()
+        speedButtonsLayout.addWidget(slowButton)
+        speedButtonsLayout.addWidget(mediumButton)
+        speedButtonsLayout.addWidget(fastButton)
+
+        return speedButtonsLayout
+    
+    def speedButtonsClicked(self, speed):
+        self.turntableSpeed = speed
+        self.speedLabel.setText(f'Turntable speed: {self.turntableSpeed}')
+
+    def back(self):
+        widget.setCurrentWidget(firstScreen)
+
 app = QApplication(sys.argv)
 widget = QStackedWidget()
 firstScreen = MainWindow()
@@ -1176,10 +1249,12 @@ secondScreen = KeyframeListWindow()
 thirdScreen = NewKeyframeWindow()
 fourthScreen = EditKeyframeWindow()
 fithScreen = KeyframeCalculator()
+sixthScreen = TurntableMenuWindow()
 widget.addWidget(fourthScreen)
 widget.addWidget(thirdScreen)
 widget.addWidget(secondScreen)
 widget.addWidget(fithScreen)
+widget.addWidget(sixthScreen)
 widget.setCurrentWidget(firstScreen)
 widget.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
 widget.show()
