@@ -672,16 +672,17 @@ class KeyframeListWindow(QMainWindow):
     def editKeyframe(self):
         widget.setCurrentWidget(fourthScreen)
 
-    # Dynamically deletes keyframes
+    # Dynamically deletes keyframes TODO fix fast delete tap crash
     def deleteKeyframe(self):
-        if self.selectedKeyframeIndex is not None:
+        if self.selectedKeyframeIndex is not None and self.keyframeTable.rowCount() > 0:
             keyframeRow = self.selectedKeyframeIndex.row()
-            keyframe = self.keyframeTable.item(keyframeRow, 0).text()
+            if keyframeRow < self.keyframeTable.rowCount():
+                keyframe = self.keyframeTable.item(keyframeRow, 0).text()
 
-            del self.keyframesData[keyframe]
-            self.updateKeyframeNumbers()
-            self.saveKeyframesData()
-            self.createKeyframeTable()
+                del self.keyframesData[keyframe]
+                self.updateKeyframeNumbers()
+                self.saveKeyframesData()
+                self.createKeyframeTable()
 
     # Goes back to the main screen
     def back(self):
