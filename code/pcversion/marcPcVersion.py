@@ -14,8 +14,10 @@ from PyQt6 import QtCore
 from PyQt6.QtCore import *
 
 # from motorfunctions import all
+from factory import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import QFont
+from abc import ABC, abstractmethod
 from PyQt6.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
 
 # Constants | slack auth | settings file | font size
@@ -52,6 +54,30 @@ buttonStyle = """
         border: 4px solid #790004;
     }
     """
+
+emergencyButtonOffStyle = """
+        QPushButton {
+        background-color : #790004; /* Different background color */
+        border : 4px solid #790004;
+        color: #dddde4; /* Text color */
+        padding: 8px 16px; /* Padding around the text */
+        border-radius: 15px; /* Rounded corners */
+        font-size: 18px; /* Font size */
+        font-weight: bold; /* Font weight */
+    }
+"""
+
+emergencyButtonOnStyle = """
+        QPushButton {
+        background-color : #d80006; /* Different background color */
+        border : 4px solid #d80006;
+        color: #dddde4; /* Text color */
+        padding: 8px 16px; /* Padding around the text */
+        border-radius: 15px; /* Rounded corners */
+        font-size: 18px; /* Font size */
+        font-weight: bold; /* Font weight */
+    }
+"""
 
 labelStyle = """
 QLabel {
@@ -267,25 +293,39 @@ class MainWindow(QMainWindow):
 
         layout = QGridLayout()
 
-        self.slider = self.setupSlider()
-        self.sliderLabel = self.setupLabel("Height: 0", font, labelStyle)
-        self.tiltLabel = self.setupLabel("Desired Tilt Angle: 0", font, labelStyle)
-        self.waitBeforeLabel = self.setupLabel("Wait Before Time: 0", font, labelStyle)
-        self.waitAfterLabel = self.setupLabel("Wait After Time: 2", font, labelStyle)
-        self.picsPerKeyframeLabel = self.setupLabel("Pictures: 20", font, labelStyle)
+        self.slider = sliderFactory.create(0, 72000, 2000, 100, 20, sliderStylesheet, self.update_slider_label)
+        self.sliderLabel = labelFactory.create("Height: 0", font, labelStyle)
+        self.tiltLabel = labelFactory.create("Desired Tilt Angle: 0", font, labelStyle)
+        self.waitBeforeLabel = labelFactory.create("Wait Before Time: 0", font, labelStyle)
+        self.waitAfterLabel = labelFactory.create("Wait After Time: 2", font, labelStyle)
+        self.picsPerKeyframeLabel = labelFactory.create("Pictures: 20", font, labelStyle)
 
-        self.tiltButtons = self.setupTiltButtons(buttonStyle, size)
-        self.waitBeforeButtons = self.setupTimeButtons("waitBefore", buttonStyle, size)
-        self.waitAfterButtons = self.setupTimeButtons("waitAfter", buttonStyle, size)
-        self.picsPerKeyframeButtons = self.setupPicsPerKeyframeButtons(buttonStyle, size)
-        self.menuButtons = self.setupMenuButtons(buttonStyle, size)
+        self.tiltButtonSub = buttonFactory.create("-", lambda: self.tiltButtonsClicked("-"), buttonStyle, size)
+        self.tiltButtonAdd = buttonFactory.create("+", lambda: self.tiltButtonsClicked("+"), buttonStyle, size)
+        self.tiltButtons = HBoxLayoutFactory.create(self.tiltButtonSub, self.tiltButtonAdd)
 
-        self.moveButton = self.setupButton("MOVE", self.moveButtonClicked, buttonStyle, size)
-        self.resetLiftButton = self.setupButton("RESET", self.reset, buttonStyle, size)
-        self.quickAddKeyframeButton = self.setupButton("QUICK ADD KEYFRAME", self.quickAddKeyframe, buttonStyle, size)
-        self.startCycleButton = self.setupButton("START CYCLE", self.cycle, buttonStyle, size)
-        self.newZeroButton = self.setupButton("SET NEW ZERO", self.newZeroClicked, buttonStyle, size)
-        self.emergencyStopButton = self.setupEmergencyStopButton(buttonStyle, size)
+        self.waitBeforeButtonSub = buttonFactory.create("-", lambda: self.waitBeforeClicked("-"), buttonStyle, size)
+        self.waitBeforeButtonAdd = buttonFactory.create("+", lambda: self.waitBeforeClicked("+"), buttonStyle, size)
+        self.waitBeforeButtons = HBoxLayoutFactory.create(self.waitBeforeButtonSub, self.waitBeforeButtonAdd)
+
+        self.waitAfterButtonSub = buttonFactory.create("-", lambda: self.waitAfterClicked("-"), buttonStyle, size)
+        self.waitAfterButtonAdd = buttonFactory.create("+", lambda: self.waitAfterClicked("+"), buttonStyle, size)
+        self.waitAfterButtons = HBoxLayoutFactory.create(self.waitAfterButtonSub, self.waitAfterButtonAdd)
+
+        self.picsPerKeyframeButtonSub = buttonFactory.create("-", lambda: self.picsPerKeyframeClicked("-"), buttonStyle, size)
+        self.picsPerKeyframeButtonAdd = buttonFactory.create("+", lambda: self.picsPerKeyframeClicked("+"), buttonStyle, size)
+        self.picsPerKeyframeButtons = HBoxLayoutFactory.create(self.picsPerKeyframeButtonSub, self.picsPerKeyframeButtonAdd)
+
+        self.keyframeButton = buttonFactory.create("KFM", self.keyframeMenuClicked, buttonStyle, size)
+        self.turntableButton = buttonFactory.create("TTM", self.turntableMenuClicked, buttonStyle, size)
+        self.menuButtons = HBoxLayoutFactory.create(self.keyframeButton, self.turntableButton)
+
+        self.moveButton = buttonFactory.create("MOVE", self.moveButtonClicked, buttonStyle, size)
+        self.resetLiftButton = buttonFactory.create("RESET", self.reset, buttonStyle, size)
+        self.quickAddKeyframeButton = buttonFactory.create("QUICK ADD KEYFRAME", self.quickAddKeyframe, buttonStyle, size)
+        self.startCycleButton = buttonFactory.create("START CYCLE", self.cycle, buttonStyle, size)
+        self.newZeroButton = buttonFactory.create("SET NEW ZERO", self.newZeroClicked, buttonStyle, size)
+        self.emergencyStopButton = buttonFactory.create("EMERGENCY STOP", self.emergencyStopClicked , emergencyButtonOffStyle, size)
 
         layout.addWidget(self.slider, 0, 0, 5, 1)
         layout.addWidget(self.sliderLabel, 5, 0)
@@ -315,94 +355,6 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-    def setupSlider(self):
-        slider = QSlider()
-        slider.setMinimum(0)
-        slider.setMaximum(72000)
-        slider.setPageStep(2000)
-        slider.setFixedWidth(100)
-        slider.setTickInterval(20)
-        slider.setStyleSheet(sliderStylesheet)
-        slider.valueChanged.connect(self.update_slider_label)
-        return slider
-
-    def setupLabel(self, text, font, style):
-        label = QLabel(text)
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        label.setFont(font)
-        label.setStyleSheet(style)
-        return label
-
-    def setupMenuButtons(self, style, size):
-        self.keyframeButton = self.setupButton("KFM", self.keyframeMenuClicked, style, size)
-        self.turntableButton = self.setupButton("TTM", self.turntableMenuClicked, style, size)
-
-        menuButtonsLayout = QHBoxLayout()
-        menuButtonsLayout.addWidget(self.keyframeButton)
-        menuButtonsLayout.addWidget(self.turntableButton)
-
-        return menuButtonsLayout
-
-    def setupButtonStyle(self):
-        return """
-            QPushButton {
-                background-color: #0066cc;
-                border: none;
-                color: white;
-                font-size: 14px;
-            }
-        """
-
-    def setupButton(self, text, slot, style, size):
-        button = QPushButton(text)
-        button.clicked.connect(slot)
-        button.setStyleSheet(style)
-        button.setMinimumSize(size[0], size[1])
-        return button
-
-    def setupTiltButtons(self, style, size):
-        tiltAddButton = self.setupButton("+", lambda: self.tiltButtonsClicked("+"), style, size)
-        tiltSubButton = self.setupButton("-", lambda: self.tiltButtonsClicked("-"), style, size)
-
-        tiltButtonsLayout = QHBoxLayout()
-        tiltButtonsLayout.addWidget(tiltAddButton)
-        tiltButtonsLayout.addWidget(tiltSubButton)
-
-        return tiltButtonsLayout
-
-    def setupTimeButtons(self, time_type, style, size):
-        addButton = self.setupButton("+", lambda: self.timeButtonsClicked(time_type, "+"), style, size)
-        subButton = self.setupButton("-", lambda: self.timeButtonsClicked(time_type, "-"), style, size)
-
-        timeButtonsLayout = QHBoxLayout()
-        timeButtonsLayout.addWidget(addButton)
-        timeButtonsLayout.addWidget(subButton)
-
-        return timeButtonsLayout
-
-    def setupPicsPerKeyframeButtons(self, style, size):
-        addButton = self.setupButton("+", lambda: self.picsPerKeyframeClicked("+"), style, size)
-        subButton = self.setupButton("-", lambda: self.picsPerKeyframeClicked("-"), style, size)
-
-        picsPerKeyframeButtonsLayout = QHBoxLayout()
-        picsPerKeyframeButtonsLayout.addWidget(addButton)
-        picsPerKeyframeButtonsLayout.addWidget(subButton)
-
-        return picsPerKeyframeButtonsLayout
-
-    def setupEmergencyStopButton(self, style, size):
-        emergencyStopButton = QPushButton("EMERGENCY STOP")
-        emergencyStopButton.setStyleSheet(style + """
-            QPushButton#emergencyStopButton {
-                background-color: #790004;
-                border: 4px solid #790004;
-            }
-        """)
-        emergencyStopButton.setMinimumSize(size[0], size[1])
-        emergencyStopButton.setObjectName("emergencyStopButton")
-        emergencyStopButton.clicked.connect(self.emergencyStopClicked)
-        return emergencyStopButton
-
 
     def moveToPosition(self, goToPos):
         curLiftHeight = self.__sliderValue
@@ -429,7 +381,8 @@ class MainWindow(QMainWindow):
             print(str(stepsNeeded))
 
     # Called when the slider is used, changes the label and the variable for the lift height
-    def update_slider_label(self, value):
+    def update_slider_label(self):
+        value = self.slider.value()
         self.sliderLabel.setText("Height: " + str(int(value / 400)))
         self.__sliderValue = value
 
@@ -450,17 +403,19 @@ class MainWindow(QMainWindow):
         self.tiltLabel.setText("Desired Tilt Angle: " + str(self.__tiltValue))
 
     # Depending on what the source and operator are, the correct value is added or subbed from the right time variable. Also refreshes the screen
-    def timeButtonsClicked(self, source, operator):
-        if source == "waitBefore" and operator == "+":
+    def waitBeforeClicked(self, operator):
+        if operator == "+":
             self.__waitBeforeTime += 0.5
-        elif source == "waitBefore" and operator == "-":
+        elif operator == "-":
             self.__waitBeforeTime -= 0.5
-        elif source == "waitAfter" and operator == "+":
-            self.__waitAfterTime += 0.5
-        elif source == "waitAfter" and operator == "-":
-            self.__waitAfterTime -= 0.5
-        print(self.__waitAfterTime, " : ", self.__waitBeforeTime)
         self.waitBeforeLabel.setText("Wait Before Time: " + str(self.__waitBeforeTime))
+
+    
+    def waitAfterClicked(self, operator):
+        if operator == "+":
+            self.__waitAfterTime += 0.5
+        elif operator == "-":
+            self.__waitAfterTime -= 0.5
         self.waitAfterLabel.setText("Wait After Time: " + str(self.__waitAfterTime))
 
     # Depending on which button got sent here it adds or subs 1 from the pictures per keyframe variable. Add button has operator = + and sub has operator = -. Also refreshes the screen
@@ -481,26 +436,10 @@ class MainWindow(QMainWindow):
     def emergencyStopClicked(self):
         if self.__emergencyFlag == False:
             self.__emergencyFlag = True
-            self.emergencyStopButton.setStyleSheet(
-                buttonStyle
-                + """
-                QPushButton#emergencyStopButton {
-                    background-color : #d80006; /* Different background color */
-                    border : 4px solid #d80006;
-                }
-            """
-            )
+            self.emergencyStopButton.setStyleSheet(emergencyButtonOnStyle)
         else:
             self.__emergencyFlag = False
-            self.emergencyStopButton.setStyleSheet(
-                buttonStyle
-                + """
-                QPushButton#emergencyStopButton {
-                    background-color : #790004; /* Different background color */
-                    border : 4px solid #790004;
-                }
-            """
-            )
+            self.emergencyStopButton.setStyleSheet(emergencyButtonOffStyle)
 
     # Checks if scanner isn't busy or in emergency stop mode, if not starts the cycle thread and changes the busy flag
     def cycle(self):
@@ -552,32 +491,16 @@ class KeyframeListWindow(QMainWindow):
 
         centralLayout = QGridLayout()  # Main horizontal layout
 
-        # Left side: QTableWidget
-        self.keyframeTable = QTableWidget()
-        self.keyframeTable.setFixedSize(550, 350)  # Adjusted table size
-        self.keyframeTable.setStyleSheet(tableStyle)
+        self.keyframeTable = QTableFactory.create((550, 350), tableStyle, tableSliderStyle)
         self.createKeyframeTable()
 
-        for row in range(self.keyframeTable.rowCount()):
-            self.keyframeTable.setRowHeight(row, 70)
-            self.keyframeTable.setColumnWidth(row, 110)
+        self.backButton = buttonFactory.create("BACK", self.back, buttonStyle, size)
+        self.addButton = buttonFactory.create("ADD KEYFRAME", self.addKeyframe, buttonStyle, size)
+        self.editButton = buttonFactory.create("EDIT KEYFRAME", self.editKeyframe, buttonStyle, size)
+        self.deleteButton = buttonFactory.create("DELETE KEYFRAME", self.deleteKeyframe, buttonStyle, size)
+        self.keyframeCalculator = buttonFactory.create("CALC KEYFRAMES", self.kfcClicked, buttonStyle, size)
 
-        self.keyframeTable.verticalScrollBar().setStyleSheet(tableSliderStyle)
-
-        # Right side: Buttons and entry fields
-        rightLayout = QVBoxLayout()  # Vertical layout for buttons and entry fields
-
-        self.backButton = self.setupButton("BACK", self.back, buttonStyle, size)
-        self.addButton = self.setupButton("ADD KEYFRAME", self.addKeyframe, buttonStyle, size)
-        self.editButton = self.setupButton("EDIT KEYFRAME", self.editKeyframe, buttonStyle, size)
-        self.deleteButton = self.setupButton("DELETE KEYFRAME", self.deleteKeyframe, buttonStyle, size)
-        self.keyframeCalculator = self.setupButton("CALC KEYFRAMES", self.kfcClicked, buttonStyle, size)
-
-        rightLayout.addWidget(self.backButton)
-        rightLayout.addWidget(self.addButton)
-        rightLayout.addWidget(self.editButton)
-        rightLayout.addWidget(self.deleteButton)
-        rightLayout.addWidget(self.keyframeCalculator)
+        rightLayout = VBoxLayoutFactory.create(self.backButton, self.addButton, self.editButton, self.deleteButton, self.keyframeCalculator)
 
         # Add the QTableWidget and the right side layout to the main horizontal layout
         centralLayout.addWidget(self.keyframeTable, 0, 0)
@@ -589,13 +512,6 @@ class KeyframeListWindow(QMainWindow):
 
         self.selectedKeyframeIndex = None
 
-
-    def setupButton(self, text, slot, style, size):
-        button = QPushButton(text)
-        button.clicked.connect(slot)
-        button.setStyleSheet(style)
-        button.setMinimumSize(size[0], size[1])
-        return button
 
     # Loads the json settings file into a local variable for esier use
     def loadKeyframesData(self):
@@ -640,6 +556,11 @@ class KeyframeListWindow(QMainWindow):
         self.keyframeTable.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows
         )
+
+        for row in range(self.keyframeTable.rowCount()):
+            self.keyframeTable.setRowHeight(row, 70)
+            self.keyframeTable.setColumnWidth(row, 110)
+        
         self.keyframeTable.itemSelectionChanged.connect(self.handleTableSelection)
 
     # Looks for the selected row and updates the corrosponding variable
@@ -694,12 +615,6 @@ class NewKeyframeWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.counter = 0
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.reset_increment)
-        self.button_pressed = False
-
-        self.setWindowTitle("Keyframe List")
         self.setStyleSheet("background-color: #343541;")
         self.setGeometry(100, 100, 800, 400)
 
@@ -708,17 +623,25 @@ class NewKeyframeWindow(QMainWindow):
 
         window = QGridLayout()
 
-        self.heightLabel = self.setupLabel("Desired height: 0", font, labelStyle)
-        self.greatHeightButtonsLayout = self.setupHeightButtons(buttonStyle, size, 4000)
-        self.smallHeightButtonsLayout = self.setupHeightButtons(buttonStyle, size, 400)
-        self.tiltLabel = self.setupLabel("Desired Tilt Angle: 0", font, labelStyle)
-        self.tiltButtonsLayout = self.setupTiltButtons(buttonStyle, size)
-        self.backButton = self.setupButton("BACK", self.backButtonClicked, buttonStyle, size)
-        self.addButton = self.setupButton("ADD KEYFRAME", self.addKeyframeClicked, buttonStyle, size)
+        self.heightLabel = labelFactory.create("Desired height: 0", font, labelStyle)
 
-        self.navButtonsLayout = QHBoxLayout()
-        self.navButtonsLayout.addWidget(self.backButton)
-        self.navButtonsLayout.addWidget(self.addButton)
+        self.heightBigSubButton = buttonFactory.create("--", lambda: self.heightButtonsBigClicked("-"), buttonStyle, size)
+        self.heightBigAddButton = buttonFactory.create("++", lambda: self.heightButtonsBigClicked("+"), buttonStyle, size)
+        self.greatHeightButtonsLayout = hboxLayoutFactory.create(self.heightBigSubButton, self.heightBigAddButton)
+
+        self.heightSmallSubButton = buttonFactory.create("-", lambda: self.heightButtonsSmallClicked("-"), buttonStyle, size)
+        self.heightSmallAddButton = buttonFactory.create("+", lambda: self.heightButtonsSmallClicked("+"), buttonStyle, size)
+        self.smallHeightButtonsLayout = hboxLayoutFactory.create(self.heightSmallSubButton, self.heightSmallAddButton)
+
+        self.tiltLabel = labelFactory.create("Desired Tilt Angle: 0", font, labelStyle)
+
+        self.tiltAddButton = buttonFactory.create("+", lambda: self.tiltButtonsClicked("+"), buttonStyle, size)
+        self.tiltSubButton = buttonFactory.create("-", lambda: self.tiltButtonsClicked("-"), buttonStyle, size)
+        self.tiltButtonsLayout = hboxLayoutFactory.create(self.tiltSubButton, self.tiltAddButton)
+
+        self.backButton = buttonFactory.create("BACK", self.backButtonClicked, buttonStyle, size)
+        self.addButton = buttonFactory.create("ADD KEYFRAME", self.addKeyframeClicked, buttonStyle, size)
+        self.navButtonsLayout = hboxLayoutFactory.create(self.backButton, self.addButton)
 
         window.addWidget(self.heightLabel, 0, 0)
         window.addLayout(self.greatHeightButtonsLayout, 1, 0)
@@ -732,14 +655,6 @@ class NewKeyframeWindow(QMainWindow):
         widget.setLayout(window)
         self.setCentralWidget(widget)
 
-    # generic function for setting up labels
-    def setupLabel(self, text, font, style):
-        label = QLabel(text)
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        label.setFont(font)
-        label.setStyleSheet(style)
-        return label
-
     # generic function for setting up buttons
     def setupButton(self, text, slot, style, size):
         button = QPushButton(text)
@@ -747,31 +662,6 @@ class NewKeyframeWindow(QMainWindow):
         button.setStyleSheet(style)
         button.setMinimumSize(size[0], size[1])
         return button
-
-    # function for setting up tilt buttons
-    def setupHeightButtons(self, style, size, changeValue):
-        heightAddButton = self.setupButton(
-            f'+ {changeValue/conversionValue}', lambda: self.heightButtonsClicked("+", changeValue), style, size
-        )
-        heightSubButton = self.setupButton(
-            f'- {changeValue/conversionValue}', lambda: self.heightButtonsClicked("-", changeValue), style, size
-        )
-
-        heightButtonsLayout = QHBoxLayout()
-        heightButtonsLayout.addWidget(heightSubButton)
-        heightButtonsLayout.addWidget(heightAddButton)
-
-        return heightButtonsLayout
-
-    def setupTiltButtons(self, style, size):
-        tiltAddButton = self.setupButton("+", lambda: self.tiltButtonsClicked("+"), style, size)
-        tiltSubButton = self.setupButton("-", lambda: self.tiltButtonsClicked("-"), style, size)
-
-        tiltButtonsLayout = QHBoxLayout()
-        tiltButtonsLayout.addWidget(tiltSubButton)
-        tiltButtonsLayout.addWidget(tiltAddButton)
-
-        return tiltButtonsLayout
 
     # Loads the json settings file into a local variable for esier use
     def loadKeyframesData(self):
@@ -788,13 +678,26 @@ class NewKeyframeWindow(QMainWindow):
             self.__desiredTilt -= 200
         self.tiltLabel.setText("Desired Tilt Angle: " + str(self.__desiredTilt))
 
-    def heightButtonsClicked(self, operator, changeValue):
+    def heightButtonsBigClicked(self, operator):
         if operator == "+":
-            if self.__desiredHeight + changeValue <= 72000:
-                self.__desiredHeight += changeValue
+            if self.__desiredHeight + 4000 <= 72000:
+                self.__desiredHeight += 4000
         elif operator == "-":
-            if self.__desiredHeight - changeValue >= 0:
-                self.__desiredHeight -= changeValue
+            if self.__desiredHeight - 4000 >= 0:
+                self.__desiredHeight -= 4000
+        self.heightLabel.setText(
+            "Desired Height: " + str(int(self.__desiredHeight / conversionValue))
+        )
+
+        self.updateHeightLabel()
+
+    def heightButtonsSmallClicked(self, operator):
+        if operator == "+":
+            if self.__desiredHeight + 400 <= 72000:
+                self.__desiredHeight += 400
+        elif operator == "-":
+            if self.__desiredHeight - 400 >= 0:
+                self.__desiredHeight -= 400
         self.heightLabel.setText(
             "Desired Height: " + str(int(self.__desiredHeight / conversionValue))
         )
@@ -879,12 +782,6 @@ class EditKeyframeWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.counter = 0
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.reset_increment)
-        self.button_pressed = False
-
-        self.setWindowTitle("Keyframe List")
         self.setStyleSheet("background-color: #343541;")
         self.setGeometry(100, 100, 800, 400)
 
@@ -894,65 +791,30 @@ class EditKeyframeWindow(QMainWindow):
         window = QGridLayout()
 
         # tilt widgets
-        self.tiltLabel = QLabel("Desired Tilt Angle: 0")
-        self.tiltLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.tiltLabel.setStyleSheet(labelStyle)
-        self.tiltLabel.setFont(font)
+        self.tiltLabel = labelFactory.create("Desired Tilt Angle: 0", font, labelStyle)
 
-        self.tiltAddButton = QPushButton("+")
-        self.tiltAddButton.clicked.connect(lambda: self.tiltButtonsClicked("+"))
-        self.tiltSubButton = QPushButton("-")
-        self.tiltSubButton.clicked.connect(lambda: self.tiltButtonsClicked("-"))
+        self.tiltAddButton = buttonFactory.create("+", lambda: self.tiltButtonsClicked("+"), buttonStyle, size)
+        self.tiltSubButton = buttonFactory.create("-", lambda: self.tiltButtonsClicked("-"), buttonStyle, size)
+        self.tiltButtonsLayout = hboxLayoutFactory.create(self.tiltSubButton, self.tiltAddButton)
 
         # height widgets
-        self.heightLabel = QLabel("Desired Height: 0")
-        self.heightLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.heightLabel.setStyleSheet(labelStyle)
-        self.heightLabel.setFont(font)
+        self.heightLabel = labelFactory.create("Desired height: 0", font, labelStyle)
 
-        self.heightAddButton = QPushButton("+")
-        self.heightAddButton.clicked.connect(lambda: self.heightButtonsClicked("+"))
-        self.heightSubButton = QPushButton("-")
-        self.heightSubButton.clicked.connect(lambda: self.heightButtonsClicked("-"))
+        self.heightAddButton = buttonFactory.create("+", lambda: self.heightButtonsClicked("+"), buttonStyle, size)
+        self.heightSubButton = buttonFactory.create("-", lambda: self.heightButtonsClicked("-"), buttonStyle, size)
+        self.heightButtonsLayout = hboxLayoutFactory.create(self.heightSubButton, self.heightAddButton)
 
-        # Tilt buttons
-        self.tiltButtonsLayout = QHBoxLayout()
-        self.tiltButtonsLayout.addWidget(self.tiltAddButton)
-        self.tiltButtonsLayout.addWidget(self.tiltSubButton)
+        self.backButton = buttonFactory.create("BACK", self.backButtonClicked, buttonStyle, size)
 
-        # Height buttons
-        self.heightButtonsLayout = QHBoxLayout()
-        self.heightButtonsLayout.addWidget(self.heightAddButton)
-        self.heightButtonsLayout.addWidget(self.heightSubButton)
+        self.editButton = buttonFactory.create("EDIT KEYFRAME", self.editKeyframeClicked, buttonStyle, size)
 
-        self.backButton = QPushButton("BACK")
-        self.backButton.clicked.connect(self.backButtonClicked)
-
-        self.editButton = QPushButton("EDIT KEYFRAME")
-        self.editButton.clicked.connect(self.editKeyframeClicked)
-        self.heightLabel.setMaximumHeight(100)
-        self.tiltLabel.setMaximumHeight(100)
-
-        self.navButtonsLayout = QHBoxLayout()
-        self.navButtonsLayout.addWidget(self.backButton)
-        self.navButtonsLayout.addWidget(self.editButton)
+        self.navButtonsLayout = hboxLayoutFactory.create(self.backButton, self.editButton)
 
         window.addWidget(self.heightLabel, 0, 0)
         window.addLayout(self.heightButtonsLayout, 1, 0)
         window.addWidget(self.tiltLabel, 0, 1)
         window.addLayout(self.tiltButtonsLayout, 1, 1)
         window.addLayout(self.navButtonsLayout, 2, 0, 1, 2)
-
-        for layout in (
-            self.heightButtonsLayout,
-            self.tiltButtonsLayout,
-            self.navButtonsLayout,
-        ):
-            for i in range(layout.count()):
-                widget = layout.itemAt(i).widget()
-                if widget is not None:
-                    widget.setMinimumSize(100, 80)
-                    widget.setStyleSheet(buttonStyle)
 
         widget = QWidget()
         widget.setLayout(window)
@@ -995,26 +857,8 @@ class EditKeyframeWindow(QMainWindow):
 
     def heightButtonsClicked(self, operator):
         if operator == "+":
-            current_time = time.time()
-            if not self.button_pressed:
-                self.button_pressed = True
-                self.previous_press = current_time
-                self.counter = 1
-                self.increment_amount = 400
-                self.__desiredHeight += self.increment_amount
-                self.heightLabel.setText(f"Value: {self.__desiredHeight}")
-                self.timer.start(3000)  # Start a 5-second timer
-            else:
-                time_difference = current_time - self.previous_press
-                if time_difference <= 3:
-                    self.counter += 1
-                    if self.counter >= 8:
-                        self.increment_amount = 2000
-                    self.__desiredHeight += self.increment_amount
-                    self.heightLabel.setText(f"Value: {self.__desiredHeight}")
-                    print("Incrementing by", self.increment_amount)
-                else:
-                    self.reset_increment()
+            self.__desiredHeight += 2000
+            self.heightLabel.setText(f"Value: {self.__desiredHeight}")
         elif operator == "-":
             self.__desiredHeight -= 2000
         self.heightLabel.setText("Desired height: " + str(self.__desiredHeight / 400))
@@ -1037,19 +881,18 @@ class KeyframeCalculator(QMainWindow):
 
         super().__init__()
 
-        self.setWindowTitle("Keyframe Calculator")
         self.setStyleSheet("background-color: #343541;")
         self.setGeometry(100, 100, 800, 400)
 
         layout = QGridLayout()
 
         # Height slider Widgets
-        self.heightSliderLabel = self.setupLabel("Height: 30", font, labelStyle)
-        self.heightSlider = self.setupSlider(30, 160, 1, 100, self.updateHeightSliderLabel)
-        self.sizeSliderLabel = self.setupLabel("Size: small", font, labelStyle)
-        self.sizeSlider = self.setupSlider(0, 2, 1, 100, self.updateSizeSliderLabel)
-        self.backButton = self.setupButton("Back", self.back, buttonStyle, size)
-        self.calculateButton = self.setupButton("Calculate", self.calculate, buttonStyle, size)
+        self.heightSliderLabel = labelFactory.create("Height: 30", font, labelStyle)
+        self.heightSlider = sliderFactory.create(30, 160, 1, 100, 20, sliderStylesheet , self.updateHeightSliderLabel)
+        self.sizeSliderLabel = labelFactory.create("Size: small", font, labelStyle)
+        self.sizeSlider = sliderFactory.create(0, 2, 1, 100, 20, sliderStylesheet, self.updateSizeSliderLabel)
+        self.backButton = buttonFactory.create("Back", self.back, buttonStyle, size)
+        self.calculateButton = buttonFactory.create("Calculate", self.calculate, buttonStyle, size)
 
         # Adding all widgets together
         layout.addWidget(self.heightSlider, 0, 0, 5, 1)
@@ -1062,32 +905,6 @@ class KeyframeCalculator(QMainWindow):
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
-
-    def setupSlider(self, min, max, pageStep, width, slot):
-        slider = QSlider()
-        slider.setMinimum(min)
-        slider.setMaximum(max)
-        slider.setPageStep(pageStep)
-        slider.setFixedWidth(width)
-        slider.setStyleSheet(sliderStylesheet)
-        slider.valueChanged.connect(slot)
-        return slider
-
-    # generic function for setting up labels
-    def setupLabel(self, text, font, style):
-        label = QLabel(text)
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        label.setFont(font)
-        label.setStyleSheet(style)
-        return label
-
-    # generic function for setting up buttons
-    def setupButton(self, text, slot, style, size):
-        button = QPushButton(text)
-        button.clicked.connect(slot)
-        button.setStyleSheet(style)
-        button.setMinimumSize(size[0], size[1])
-        return button
 
     def back(self):
         widget.setCurrentWidget(secondScreen)
@@ -1186,16 +1003,20 @@ class TurntableMenuWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-
-        self.setWindowTitle("Turntable Menu")
         self.setStyleSheet("background-color: #343541;")
         self.setGeometry(100, 100, 800, 400)
 
         window = QGridLayout()
 
-        self.speedLabel = self.setupLabel(f'Turntable speed: {self.turntableSpeed}', font, labelStyle)
-        self.speedButtonsLayout = self.setupSpeedButtons(buttonStyle, size)
-        self.backButton = self.setupButton("BACK", self.back, buttonStyle, size)
+        self.speedLabel = labelFactory.create(f'Turntable speed: {self.turntableSpeed}', font, labelStyle)
+
+        self.slowButton = buttonFactory.create('Slow', lambda: self.speedButtonsClicked('Slow'), buttonStyle, size)
+        self.mediumButton = buttonFactory.create('Medium', lambda: self.speedButtonsClicked('Medium'), buttonStyle, size)
+        self.fastButton = buttonFactory.create('Fast', lambda: self.speedButtonsClicked('Fast'), buttonStyle, size)
+
+        self.speedButtonsLayout = hboxLayoutFactory.create(self.slowButton, self.mediumButton, self.fastButton)
+
+        self.backButton = buttonFactory.create("BACK", self.back, buttonStyle, size)
 
         window.addWidget(self.speedLabel, 0, 1)
         window.addLayout(self.speedButtonsLayout, 1, 1)
@@ -1204,35 +1025,6 @@ class TurntableMenuWindow(QMainWindow):
         widget = QWidget()
         widget.setLayout(window)
         self.setCentralWidget(widget)
-
-    # generic function for setting up labels
-    def setupLabel(self, text, font, style):
-        label = QLabel(text)
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        label.setFont(font)
-        label.setStyleSheet(style)
-        return label
-    
-    # generic function for setting up buttons
-    def setupButton(self, text, slot, style, size):
-        button = QPushButton(text)
-        button.clicked.connect(slot)
-        button.setStyleSheet(style)
-        button.setMinimumSize(size[0], size[1])
-        return button
-    
-    # function for setting up speed options. Slow, medium and fast
-    def setupSpeedButtons(self, style, size):
-        slowButton = self.setupButton('Slow', lambda: self.speedButtonsClicked('Slow'), style, size)
-        mediumButton = self.setupButton('Medium', lambda: self.speedButtonsClicked('Medium'), style, size)
-        fastButton = self.setupButton('Fast', lambda: self.speedButtonsClicked('Fast'), style, size)
-
-        speedButtonsLayout = QHBoxLayout()
-        speedButtonsLayout.addWidget(slowButton)
-        speedButtonsLayout.addWidget(mediumButton)
-        speedButtonsLayout.addWidget(fastButton)
-
-        return speedButtonsLayout
     
     def speedButtonsClicked(self, speed):
         self.turntableSpeed = speed
@@ -1241,9 +1033,15 @@ class TurntableMenuWindow(QMainWindow):
     def back(self):
         widget.setCurrentWidget(firstScreen)
 
+
 app = QApplication(sys.argv)
 widget = QStackedWidget()
 firstScreen = MainWindow()
+
+sliderFactory = sliderFactory()
+labelFactory = labelFactory()
+buttonFactory = buttonFactory()
+hboxLayoutFactory = HBoxLayoutFactory()
 
 widget.addWidget(firstScreen)
 secondScreen = KeyframeListWindow()
