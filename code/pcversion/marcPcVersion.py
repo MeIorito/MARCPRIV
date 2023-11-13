@@ -17,8 +17,7 @@ from PyQt6.QtCore import *
 from factory import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import QFont
-from abc import ABC, abstractmethod
-from PyQt6.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
+from PyQt6.QtWidgets import QMainWindow, QApplication
 
 # Constants | slack auth | settings file | font size
 slackToken = "xoxb-5867825218247-5875744156982-TuLlFjvAptQvxyraY4ZQ4Vm6"
@@ -288,7 +287,6 @@ class MainWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle("Your Application")
         self.setGeometry(100, 100, 600, 400)
 
         layout = QGridLayout()
@@ -302,23 +300,23 @@ class MainWindow(QMainWindow):
 
         self.tiltButtonSub = buttonFactory.create("-", lambda: self.tiltButtonsClicked("-"), buttonStyle, size)
         self.tiltButtonAdd = buttonFactory.create("+", lambda: self.tiltButtonsClicked("+"), buttonStyle, size)
-        self.tiltButtons = HBoxLayoutFactory.create(self.tiltButtonSub, self.tiltButtonAdd)
+        self.tiltButtons = hboxLayoutFactory.create(self.tiltButtonSub, self.tiltButtonAdd)
 
         self.waitBeforeButtonSub = buttonFactory.create("-", lambda: self.waitBeforeClicked("-"), buttonStyle, size)
         self.waitBeforeButtonAdd = buttonFactory.create("+", lambda: self.waitBeforeClicked("+"), buttonStyle, size)
-        self.waitBeforeButtons = HBoxLayoutFactory.create(self.waitBeforeButtonSub, self.waitBeforeButtonAdd)
+        self.waitBeforeButtons = hboxLayoutFactory.create(self.waitBeforeButtonSub, self.waitBeforeButtonAdd)
 
         self.waitAfterButtonSub = buttonFactory.create("-", lambda: self.waitAfterClicked("-"), buttonStyle, size)
         self.waitAfterButtonAdd = buttonFactory.create("+", lambda: self.waitAfterClicked("+"), buttonStyle, size)
-        self.waitAfterButtons = HBoxLayoutFactory.create(self.waitAfterButtonSub, self.waitAfterButtonAdd)
+        self.waitAfterButtons = hboxLayoutFactory.create(self.waitAfterButtonSub, self.waitAfterButtonAdd)
 
         self.picsPerKeyframeButtonSub = buttonFactory.create("-", lambda: self.picsPerKeyframeClicked("-"), buttonStyle, size)
         self.picsPerKeyframeButtonAdd = buttonFactory.create("+", lambda: self.picsPerKeyframeClicked("+"), buttonStyle, size)
-        self.picsPerKeyframeButtons = HBoxLayoutFactory.create(self.picsPerKeyframeButtonSub, self.picsPerKeyframeButtonAdd)
+        self.picsPerKeyframeButtons = hboxLayoutFactory.create(self.picsPerKeyframeButtonSub, self.picsPerKeyframeButtonAdd)
 
         self.keyframeButton = buttonFactory.create("KFM", self.keyframeMenuClicked, buttonStyle, size)
         self.turntableButton = buttonFactory.create("TTM", self.turntableMenuClicked, buttonStyle, size)
-        self.menuButtons = HBoxLayoutFactory.create(self.keyframeButton, self.turntableButton)
+        self.menuButtons = hboxLayoutFactory.create(self.keyframeButton, self.turntableButton)
 
         self.moveButton = buttonFactory.create("MOVE", self.moveButtonClicked, buttonStyle, size)
         self.resetLiftButton = buttonFactory.create("RESET", self.reset, buttonStyle, size)
@@ -480,9 +478,8 @@ class MainWindow(QMainWindow):
 
 class KeyframeListWindow(QMainWindow):
     def __init__(self):
-        super().__init__()
+        super().__init__() 
 
-        self.setWindowTitle("Keyframe List")
         self.setStyleSheet("background-color: #343541;")
         self.setGeometry(100, 100, 800, 400)  # Adjusted window size
 
@@ -491,7 +488,7 @@ class KeyframeListWindow(QMainWindow):
 
         centralLayout = QGridLayout()  # Main horizontal layout
 
-        self.keyframeTable = QTableFactory.create((550, 350), tableStyle, tableSliderStyle)
+        self.keyframeTable = qtableFactory.create((550, 350), tableStyle, tableSliderStyle)
         self.createKeyframeTable()
 
         self.backButton = buttonFactory.create("BACK", self.back, buttonStyle, size)
@@ -500,7 +497,7 @@ class KeyframeListWindow(QMainWindow):
         self.deleteButton = buttonFactory.create("DELETE KEYFRAME", self.deleteKeyframe, buttonStyle, size)
         self.keyframeCalculator = buttonFactory.create("CALC KEYFRAMES", self.kfcClicked, buttonStyle, size)
 
-        rightLayout = VBoxLayoutFactory.create(self.backButton, self.addButton, self.editButton, self.deleteButton, self.keyframeCalculator)
+        rightLayout = vboxLayoutFactory.create(self.backButton, self.addButton, self.editButton, self.deleteButton, self.keyframeCalculator)
 
         # Add the QTableWidget and the right side layout to the main horizontal layout
         centralLayout.addWidget(self.keyframeTable, 0, 0)
@@ -654,14 +651,6 @@ class NewKeyframeWindow(QMainWindow):
         widget = QWidget()
         widget.setLayout(window)
         self.setCentralWidget(widget)
-
-    # generic function for setting up buttons
-    def setupButton(self, text, slot, style, size):
-        button = QPushButton(text)
-        button.clicked.connect(slot)
-        button.setStyleSheet(style)
-        button.setMinimumSize(size[0], size[1])
-        return button
 
     # Loads the json settings file into a local variable for esier use
     def loadKeyframesData(self):
@@ -866,12 +855,6 @@ class EditKeyframeWindow(QMainWindow):
     def backButtonClicked(self):
         widget.setCurrentWidget(secondScreen)
 
-    def reset_increment(self):
-        self.button_pressed = False
-        self.timer.stop()
-        self.counter = 0
-        self.increment_amount = 1
-
 
 class KeyframeCalculator(QMainWindow):
     __objHeight = 30
@@ -1041,7 +1024,7 @@ firstScreen = MainWindow()
 sliderFactory = sliderFactory()
 labelFactory = labelFactory()
 buttonFactory = buttonFactory()
-hboxLayoutFactory = HBoxLayoutFactory()
+hboxLayoutFactory = hboxLayoutFactory()
 
 widget.addWidget(firstScreen)
 secondScreen = KeyframeListWindow()
