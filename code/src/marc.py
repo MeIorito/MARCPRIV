@@ -659,8 +659,7 @@ class NewKeyframeWindow(QMainWindow):
         self.tiltButtonsLayout = hboxLayoutFactory.create(self.tiltSubButton, self.tiltAddButton)
 
         self.backButton = buttonFactory.create("BACK", self.backButtonClicked, buttonStyle, size)
-        self.addButton = buttonFactory.create("ADD KEYFRAME", self.addKeyframeClicked, buttonStyle, size)
-        self.navButtonsLayout = hboxLayoutFactory.create(self.backButton, self.addButton)
+        self.navButtonsLayout = hboxLayoutFactory.create(self.backButton)
 
         window.addWidget(self.heightLabel, 0, 0)
         window.addLayout(self.greatHeightButtonsLayout, 1, 0)
@@ -723,32 +722,6 @@ class NewKeyframeWindow(QMainWindow):
 
     # Goes back to the main screen
     def backButtonClicked(self):
-        widget.setCurrentWidget(secondScreen)
-
-    def addKeyframeClicked(self):
-        # calculates next keyrame number and creates the name
-        nextKeyframe = secondScreen.keyframeTable.rowCount() + 1
-        keyframeName = "Keyframe " + str(nextKeyframe)
-        print(nextKeyframe)
-        # Gets wanted values from entries
-        liftHeight = self.__desiredHeight
-        tiltDegree = self.__desiredTilt
-
-        # Adds the kyframe to the last spot
-        if keyframeName and liftHeight:
-            keyframeData = {
-                "liftHeight": int(liftHeight),
-                "tiltDegree": int(tiltDegree),
-                "timeAdded": QDateTime.currentDateTime().toString(
-                    "dd/MM/yyyy hh:mm:ss"
-                ),
-            }
-            secondScreen.keyframesData[keyframeName] = keyframeData
-            secondScreen.saveKeyframesData()
-            secondScreen.createKeyframeTable()
-            secondScreen.keyframeTable.setRowHeight(nextKeyframe - 1, 70)
-            for column in range(secondScreen.keyframeTable.columnCount()):
-                secondScreen.keyframeTable.setColumnWidth(column, 125)
         widget.setCurrentWidget(secondScreen)
 
     def quickAddKeyframe(self, desiredHeight, desiredTilt):
