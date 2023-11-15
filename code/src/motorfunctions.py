@@ -5,6 +5,8 @@ from time import sleep
 # Pin declaration
 EMERGENCY = 32 # Emergency Pin
 
+TILTZERO = 25
+
 DIRTABLE  = 36 # Turntable Pins
 STEPTABLE = 33 #
 
@@ -27,7 +29,8 @@ CCW = 0
 # Speed between HIGH and LOW within a step
 LIFTSPEED  = 0.00005
 TABLESPEED = 0.0005
-TILTSPEED  = 0.00005
+TILTSPEEDSLOW  = 0.002
+TILTSPEEDFAST = 0.001
 
 # Setup pin layout on PI
 GPIO.setmode(GPIO.BOARD)
@@ -41,6 +44,7 @@ GPIO.setup(DIRTILT,   GPIO.OUT)
 GPIO.setup(STEPTILT,  GPIO.OUT)
 GPIO.setup(FOCUS,     GPIO.OUT)
 GPIO.setup(SHUTTER,   GPIO.OUT)
+GPIO.setup(TILTZERO,  GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(TOPSWITCH, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(BOTSWITCH, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(EMERGENCY, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -49,6 +53,34 @@ GPIO.setup(EMERGENCY, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.output(DIRTABLE, CW)
 GPIO.output(DIRLIFT,  CW)
 GPIO.output(DIRTILT,  CW)
+
+
+def calibrateTilthead():
+    if GPIO.input(TILTZERO) != False:
+        while GPIO.input(TILTZERO) != False:
+            if GPIO.input(EMERGENCY) != False:
+                break
+            motorTiltCCW(1)
+            sleep(TILTSPEEDSLOW)
+    else:
+        while GPIO.input(TILTZERO) == False:
+            if GPIO.input(EMERGENCY) != False:
+                break
+            motorTiltCW(20)
+            sleep(TILTSPEEDSLOW)
+        while GPIO.input(TILTZERO) != False:
+            if GPIO.input(EMERGENCY) != False:
+                break
+            motorTiltCCW(1)
+            sleep(TILTSPEEDSLOW)
+
+def calibrateCameraLift():
+    if GPIO.input(BOTSWITCH) != False:
+        while GPIO.input(BOTSWITCH) != False:
+            if GPIO.input(EMERGENCY) != False:
+                break
+            motorLiftDown(1)
+    
 
 def calculateEase(step, range):
     sleepTime = (math.cos(math.pi*step/(range/2))+1.1)/40000
@@ -112,9 +144,9 @@ def motorTiltCW(distance): # Move the Tilthead <distance> steps clockwise; 88 st
             print("Emergency triggered")
             break
         GPIO.output(STEPTILT,GPIO.HIGH)
-        sleep(calculateEase(x, distance))
+        sleep(TILTSPEEDFAST)
         GPIO.output(STEPTILT,GPIO.LOW)
-        sleep(calculateEase(x, distance))
+        sleep(TILTSPEEDFAST)
 
 def motorTiltCCW(distance): # Move the Tilthead <distance> steps counter clockwise; 88 steps/degree
     GPIO.output(DIRTILT,CCW)
@@ -123,56 +155,9 @@ def motorTiltCCW(distance): # Move the Tilthead <distance> steps counter clockwi
             print("Emergency triggered")
             break
         GPIO.output(STEPTILT,GPIO.HIGH)
-        sleep(calculateEase(x, distance))
+        sleep(TILTSPEEDFAST)
         GPIO.output(STEPTILT,GPIO.LOW)
-        sleep(calculateEase(x, distance))
-
-
-# Presets
-def motorLiftCalibrate(): # Move all the way up, then move down while counting the steps; Returns total steps down
-    stepsTaken = 0
-    
-    GPIO.output(DIRLIFT,CW)
-
-    while GPIO.input(TOPSWITCH) != False:   # Top switch has been acting unreliable, so overkill it is.
-        if GPIO.input(TOPSWITCH) == False:
-            break
-        if GPIO.input(EMERGENCY) != False:
-            print("Emergency triggered")
-            break
-        if GPIO.input(TOPSWITCH) == False:
-            break
-        GPIO.output(STEPLIFT,GPIO.HIGH)
-        sleep(LIFTSPEED)
-        if GPIO.input(TOPSWITCH) == False:
-            break
-        GPIO.output(STEPLIFT,GPIO.LOW)
-        sleep(LIFTSPEED)
-    
-    sleep(.5)
-    GPIO.output(DIRLIFT,CCW)
-    while GPIO.input(BOTSWITCH) != False:
-        if GPIO.input(EMERGENCY) != False:
-            print("Emergency triggered")
-            break
-        stepsTaken = stepsTaken + 1
-        GPIO.output(STEPLIFT,GPIO.HIGH)
-        sleep(LIFTSPEED)
-        GPIO.output(STEPLIFT,GPIO.LOW)
-        sleep(LIFTSPEED)
-        
-    return stepsTaken
-
-def resetLift(): # Ensures lift is on the bottom; e.g. so the motors can safely power off
-    GPIO.output(DIRLIFT,CCW)
-    while GPIO.input(BOTSWITCH) != False:
-        if GPIO.input(EMERGENCY) != False:
-            print("Emergency triggered")
-            break
-        GPIO.output(STEPLIFT,GPIO.HIGH)
-        sleep(LIFTSPEED)
-        GPIO.output(STEPLIFT,GPIO.LOW)
-        sleep(LIFTSPEED)
+        sleep(TILTSPEEDFAST)
 
 def captureImage():
     GPIO.output(FOCUS,  1)
