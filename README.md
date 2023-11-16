@@ -25,8 +25,6 @@ The MARC (Motorised Alternate Reality Capture) 3D Scanner provides an opportunit
 MARC uses Photogrammetry to scan objects. The object spins on a turntable while the camera makes pictures from different heights and angles. These pictures are then put in software that creates a 3D model. And finaly are cleaned by real people.
 Keyframes are the combination of height and angle for a position. There can be an unlimited amount of keyframes, wich can be cycled through for a perfect 360 view of an object. (In this case a curly fry)
 
-See [here](https://github.com/MeIorito/MARCPRIV/blob/f18d6a332a76eb8f18d45768995e26d3b8c86d63/explenation.md) for the explenation file for more in depth explenation.
-
 Here are some pictures of MARC:
 
 ![MARC picture](./readmePics/marcPic1.jpeg)
@@ -89,7 +87,7 @@ See the scanner movents here:
   
   - **Wait times**: Edit the time the scanner waits before and after taking a picture before doing anything else.
   
-  - **Zero Position**: Set a new reference position (zero) for the scanner to start scanning cycles from. 
+  - **Zero Position**: Consistent camera zero position
   
   - **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
 
@@ -97,7 +95,7 @@ See the scanner movents here:
 
   ## Expected commitment time
 
-  In our experience, the marc takes 5 hours to build. Of cource your skill level has a huge impact on this, but with the documentation everyone can do it.
+  In our experience, the marc takes 5 hours to build. Of cource your skill level has a huge impact on this, but with the documentation our guess is about 5 hours.
 
   ## Getting started
 
@@ -149,20 +147,14 @@ objDistance = <"yourDistanceInCm">
   ### Manual keyframes
   
   1. Launch the application.
-  2. Ensure the scanner is at its lowest position and the camera is level.
-  3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete. Or use the "QUICK KEYFRAME" button to add the current height and tilt to a keyframe.(see [UI](#UI))
+  2. Correctly connect the camera to the Raspbarry Pi.
+  3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete. Or use the "QUICK KEYFRAME" button on the main screen to add the current height and tilt to a keyframe.(see [UI](#UI))
   4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
   5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
-  6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
+  6. Wait for the results!
   
   ### Automatic keyframes
-  
-  1. Launch the application.
-  2. Ensure the scanner is at its lowest position and the camera is level.
-  3. Let the scanner calculate the keyframes based on the height and size of the object by clicking on the "CALCULATE " button. (see [UI](#UI))
-  4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
-  5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
-  6. Use "SET NEW ZERO" to set a new tilt reference position if needed. (see [UI](#UI))
+  **WIP**
   
   ## Dependencies
   
