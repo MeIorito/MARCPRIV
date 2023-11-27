@@ -51,9 +51,9 @@ Watch our [production video](https://we.tl/t-bFW5XTTR4l) for a detailed demonstr
   
   - **Tilt control**: The scanner can move its tilthead both clockwise and counterclockwise.
   
-  - **Turntable control**: The scanner can turn its turntable.
+  - **Turntable control**: The scanner can turn its turntable at different speeds.
   
-  - **Physical emergencystop button**: This button stops all the power to the motors.
+  - **Physical emergencystop button**: Button to stop all functionalities.
 
   - **Stop switches at the top and bottom**: Can stop the height motor if it overshoots.
 
@@ -95,7 +95,7 @@ See the scanner movents here:
 
   ## Expected commitment time
 
-  In our experience, the marc takes 5 hours to build. Of cource your skill level has a huge impact on this, but with the documentation our guess is about 5 hours.
+  In our experience, the marc takes 6 hours to build. Of cource your skill level has a huge impact on this, but with the documentation our guess is about 6 hours.
 
   ## Getting started
 
@@ -114,15 +114,15 @@ sudo apt install python3-pyqt5
 pip install slack
 ```
   3. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional) If you decide not to use this feature you will have to manually delete the slack code.
-  4. Change the slackToken to your own. Line 23
+  4. Change the slackToken to your own. This has to be done in the constants file, after that in the cycle class, you should delete all the code that has to do with slack messaging.
 ```Python
 slackToken = <"youToken">
 ```
-  5. Change the distance variable to the distance between the object and the tilt point. Line 30
+  5. Change the distance variable to the distance between the object and the tilt point. This can also be done in the constants file.
 ```Python
 objDistance = <"yourDistanceInCm">
 ```
-  7. Run the application using Python.
+  7. Run the main application using Python.
 
   ## UI
   
