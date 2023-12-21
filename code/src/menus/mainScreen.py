@@ -2,7 +2,7 @@ from classes import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from constants import constants
-from classes import cycle
+from threads import stopCycle
 from controllers import motorfunctions
 from PyQt5.QtWidgets import QMainWindow
 
@@ -194,7 +194,7 @@ class MainWindow(QMainWindow):
     # Checks if MARC isn't busy or in emergency stop mode, if not starts the cycle thread and changes the busy flag
     def cycle(self):
         if self.__isCycleBusy != True and self.__emergencyFlag != True:
-            newCycleThread = cycle.cycleThread(self.mc, self.__waitBeforeTime, self.__waitAfterTime, self.__picsPerKeyframe)
+            newCycleThread = stopCycle.cycleThread(self.mc, self.__waitBeforeTime, self.__waitAfterTime, self.__picsPerKeyframe)
             newCycleThread.start()
 
     # Set state of MARC

@@ -41,7 +41,7 @@ class TurntableMenuWindow(QMainWindow):
 
         self.backButton = constants.buttonFactory.create("BACK", self.back, constants.buttonStyle, constants.size)
         self.turnButton = constants.buttonFactory.create(f'INFINITE TURN: {self.turnSignal}', self.turn, constants.buttonStyle, constants.size)
-        self.frietButton = constants.buttonFactory.create("PATAT SCANNEN", self.frietScan, constants.buttonStyle, constants.size)
+        self.frietButton = constants.buttonFactory.create("TIMELAPS", self.timelaps, constants.buttonStyle, constants.size)
 
         window.addWidget(self.speedLabel, 0, 1)
         window.addLayout(self.speedButtonsLayout, 1, 1)
@@ -73,7 +73,7 @@ class TurntableMenuWindow(QMainWindow):
             self.turnSignal = "OFF"
             self.turnButton.setText(f'INFINITE TURN: {self.turnSignal}')
 
-    def frietScan(self):
+    def timelaps(self):
         pass
 
     def back(self):

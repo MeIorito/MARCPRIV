@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QFont
-from classes import factory
+from code.src.constants import factory
 import sys
 from PyQt5 import QtCore
 from PyQt5.QtCore import *
