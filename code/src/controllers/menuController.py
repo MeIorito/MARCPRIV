@@ -19,8 +19,10 @@ class menuController():
         self.widget.addWidget(self.thirdScreen)
         self.widget.addWidget(self.fourthScreen)
         self.widget.addWidget(self.fifthScreen)
+        
         self.widget.setCurrentWidget(self.firstScreen)
         self.widget.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
+        self.widget.showMaximized()
         self.widget.show()
 
     def showMainMenu(self):

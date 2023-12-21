@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         # Creates all the widgets using the factory classes wich are imported from constants
         self.slider = constants.sliderFactory.create(0, 72000, 2000, 100, 20, constants.sliderStylesheet, self.update_slider_label)
         self.sliderLabel = constants.labelFactory.create("Height: 0", constants.font, constants.labelStyle)
-        self.tiltLabel = constants.labelFactory.create("Tilt", constants.font, constants.labelStyle)
+        self.tiltLabel = constants.labelFactory.create("Tilt: 0", constants.font, constants.labelStyle)
         self.waitBeforeLabel = constants.labelFactory.create(f'Wait Before Time: {self.__waitBeforeTime}', constants.font, constants.labelStyle)
         self.waitAfterLabel = constants.labelFactory.create(f'Wait After Time: {self.__waitAfterTime}', constants.font, constants.labelStyle)
         self.picsPerKeyframeLabel = constants.labelFactory.create(f'Pictures: {self.__picsPerKeyframe}', constants.font, constants.labelStyle)
@@ -61,7 +61,7 @@ class MainWindow(QMainWindow):
         self.resetLiftButton = constants.buttonFactory.create("RESET", self.reset, constants.buttonStyle, constants.size)
         self.quickAddKeyframeButton = constants.buttonFactory.create("QUICK ADD KEYFRAME", self.quickAddKeyframe, constants.buttonStyle, constants.size)
         self.startCycleButton = constants.buttonFactory.create("START CYCLE", self.cycle, constants.buttonStyle, constants.size)
-        self.newZeroButton = constants.buttonFactory.create("SET NEW ZERO", self.newZeroClicked, constants.buttonStyle, constants.size)
+        self.newZeroButton = constants.buttonFactory.create("RESET TILT", self.resetTiltButtonClicked, constants.buttonStyle, constants.size)
         self.emergencyStopButton = constants.buttonFactory.create("EMERGENCY STOP", self.emergencyStopClicked , constants.emergencyButtonOffStyle, constants.size)
 
         # Adds all the widgets to the layout
@@ -135,11 +135,11 @@ class MainWindow(QMainWindow):
     def quickAddKeyframe(self):
         self.mc.thirdScreen.quickAddKeyframe(self.__desiredHeight, self.__tiltValue)
 
-    # Sets the tilt variable to 0 because of inconsistencies in the tilt motor
-    def newZeroClicked(self):
+    def resetTiltButtonClicked(self):
+        motorfunctions.calibrateTilthead()
         self.__tiltValue = 0
         self.__desiredTilt = 0
-        self.tiltLabel.setText("Tilt: " + str(self.__tiltValue))
+        self.setTiltLabelVal(self.__tiltValue)
 
     # Depending on which button got sent here it adds or subs 20 from the tilt variable. Add button has operator = + and sub has operator = -
     def tiltButtonsClicked(self, operator):
@@ -194,7 +194,7 @@ class MainWindow(QMainWindow):
     # Checks if MARC isn't busy or in emergency stop mode, if not starts the cycle thread and changes the busy flag
     def cycle(self):
         if self.__isCycleBusy != True and self.__emergencyFlag != True:
-            newCycleThread = cycle(self.mc, self.__waitBeforeTime, self.__waitAfterTime, self.__picsPerKeyframe)
+            newCycleThread = cycle.cycleThread(self.mc, self.__waitBeforeTime, self.__waitAfterTime, self.__picsPerKeyframe)
             newCycleThread.start()
 
     # Set state of MARC

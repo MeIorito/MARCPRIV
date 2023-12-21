@@ -38,5 +38,10 @@
         "liftHeight": 11625,
         "tiltDegree": 200,
         "timeAdded": "19/10/2023 14:01:11"
+    },
+    "Keyframe 9": {
+        "liftHeight": 20000,
+        "tiltDegree": 200,
+        "timeAdded": "18/12/2023 14:30:00"
     }
 }

@@ -6,7 +6,7 @@ import slack
 import random
 import threading
 from constants import constants
-from classes import *
+from classes import infiniteTurn
 from time import sleep
 from PyQt5 import QtCore
 from PyQt5.QtCore import *
@@ -16,7 +16,10 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
 
 class TurntableMenuWindow(QMainWindow):
+    
     turntableSpeed = 0.0009
+    turntableSpeedDisplay = "Medium"
+    turnSignal = "OFF"
 
     def __init__(self, menuController):
         super().__init__()
@@ -28,7 +31,7 @@ class TurntableMenuWindow(QMainWindow):
 
         window = QGridLayout()
 
-        self.speedLabel = constants.labelFactory.create(f'Turntable speed: {self.turntableSpeed}', constants.font, constants.labelStyle)
+        self.speedLabel = constants.labelFactory.create(f'Turntable speed: {self.turntableSpeedDisplay}', constants.font, constants.labelStyle)
 
         self.slowButton = constants.buttonFactory.create('Slow', lambda: self.speedButtonsClicked('Slow'), constants.buttonStyle, constants.size)
         self.mediumButton = constants.buttonFactory.create('Medium', lambda: self.speedButtonsClicked('Medium'), constants.buttonStyle, constants.size)
@@ -37,10 +40,14 @@ class TurntableMenuWindow(QMainWindow):
         self.speedButtonsLayout = constants.hboxLayoutFactory.create(self.slowButton, self.mediumButton, self.fastButton)
 
         self.backButton = constants.buttonFactory.create("BACK", self.back, constants.buttonStyle, constants.size)
+        self.turnButton = constants.buttonFactory.create(f'INFINITE TURN: {self.turnSignal}', self.turn, constants.buttonStyle, constants.size)
+        self.frietButton = constants.buttonFactory.create("PATAT SCANNEN", self.frietScan, constants.buttonStyle, constants.size)
 
         window.addWidget(self.speedLabel, 0, 1)
         window.addLayout(self.speedButtonsLayout, 1, 1)
-        window.addWidget(self.backButton, 2, 1)
+        window.addWidget(self.turnButton, 2, 1)
+        window.addWidget(self.frietButton, 3, 1)
+        window.addWidget(self.backButton, 4, 1)
 
         widget = QWidget()
         widget.setLayout(window)
@@ -54,8 +61,20 @@ class TurntableMenuWindow(QMainWindow):
         elif speed == 'Fast':
             self.turntableSpeed = constants.turntableSpeeds[2]
             
-        self.speedLabel.setText(f'Turntable speed: {self.turntableSpeed}')
+        self.speedLabel.setText(f'Turntable speed: {speed}')
 
+    def turn(self):
+        if self.turnSignal == "OFF":
+            self.turnSignal = "ON"
+            thread = infiniteTurn.infiniteTurnThread(self)
+            thread.start()
+            self.turnButton.setText(f'INFINITE TURN: {self.turnSignal}')
+        else:
+            self.turnSignal = "OFF"
+            self.turnButton.setText(f'INFINITE TURN: {self.turnSignal}')
+
+    def frietScan(self):
+        pass
 
     def back(self):
         self.mc.showMainMenu()

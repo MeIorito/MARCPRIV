@@ -128,5 +128,5 @@ class NewKeyframeWindow(QMainWindow):
             self.mc.secondScreen.saveKeyframesData()
             self.mc.secondScreen.createKeyframeTable()
             self.mc.secondScreen.keyframeTable.setRowHeight(nextKeyframe - 1, 70)
-            for column in range(secondScreen.keyframeTable.columnCount()):
+            for column in range(self.mc.secondScreen.keyframeTable.columnCount()):
                 self.mc.secondScreen.keyframeTable.setColumnWidth(column, 125)

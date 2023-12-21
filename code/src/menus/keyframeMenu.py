@@ -1,7 +1,6 @@
 import json
 from constants import constants
 from PyQt5.QtCore import *
-from constants import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QMainWindow
 

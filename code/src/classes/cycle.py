@@ -73,15 +73,20 @@ class cycleThread(threading.Thread):
                             self.mc.firstScreen.setSliderVal(keyframesData[f"Keyframe {i}"]["liftHeight"])
                             self.mc.firstScreen.setTiltLabelVal(keyframesData[f"Keyframe {i}"]["tiltDegree"])
 
-                            for _ in range(self.__picsPerKeyframe):
-                                if not self.mc.firstScreen.getEmercenyFlag():
-                                    sleep(self.__beforeWaitTime)
-                                    motorfunctions.captureImage()
-                                    sleep(self.__afterWaitTime)
-                                    motorfunctions.motorTableCW(self.__degreesPerRotation, self.__turntableSpeed)
-                                else:
-                                    text = "The emergency button has been pressed!"
-                                    break
+                            #for _ in range(self.__picsPerKeyframe):
+                                #if not self.mc.firstScreen.getEmercenyFlag():
+                                    #sleep(self.__beforeWaitTime)
+                                    #motorfunctions.captureImage()
+                                    #motorfunctions.startVideo()
+                                    #sleep(self.__afterWaitTime)
+                                    #motorfunctions.motorTableCW(self.__degreesPerRotation, self.__turntableSpeed)
+                                #else:
+                                    #text = "The emergency button has been pressed!"
+                                    #break
+                            
+                            motorfunctions.fullTurnCycle(self.__degreesPerRotation, self.__picsPerKeyframe)
+                            sleep(2)
+                            
                         else:
                             break
                

@@ -167,7 +167,7 @@ tableSliderStyle = "QScrollBar:vertical { width: 35px; }"
 
 class cycleThread(threading.Thread):
     # Messages for the slack bot to send (Can delete an customize) chatGPT generated
-    __marc_berichten = [
+    marc_berichten = [
         "Scan voltooid! Tijd voor de grote onthulling.",
         "Ta-da! De 3D-scan is gereed voor inspectie.",
         "Missie volbracht! Wat denk je van het resultaat?",
@@ -183,10 +183,10 @@ class cycleThread(threading.Thread):
     # Constructor, needs the wait times for the cycle
     def __init__(self, waitBeforeTime, waitAfterTime, picsPerKeyframe):
         threading.Thread.__init__(self)
-        self.__beforeWaitTime = waitBeforeTime
-        self.__afterWaitTime = waitAfterTime
-        self.__picsPerKeyframe = picsPerKeyframe
-        self.__degreesPerRotation = int(32000 / self.__picsPerKeyframe)
+        self.beforeWaitTime = waitBeforeTime
+        self.afterWaitTime = waitAfterTime
+        self.picsPerKeyframe = picsPerKeyframe
+        self.degreesPerRotation = int(32000 / self.picsPerKeyframe)
 
     # Capture cycle
     def run(self):
@@ -216,13 +216,13 @@ class cycleThread(threading.Thread):
                             sleep(5)
                             print("tilt van camera gaat naar gewilde positie!")
                             sleep(5)
-                            for x in range(self.__picsPerKeyframe):
+                            for x in range(self.picsPerKeyframe):
                                 if firstScreen.getEmercenyFlag() != True:
                                     print("Tafel draait!")
                                     # sleep(2)
-                                    sleep(self.__beforeWaitTime)
+                                    sleep(self.beforeWaitTime)
                                     print("Maakt foto!")
-                                    # sleep(self.__afterWaitTime)
+                                    # sleep(self.afterWaitTime)
                                 else:
                                     text = "The emergency button has been pressed!"
                                     print("The emergency button has been pressed!")
@@ -247,7 +247,7 @@ class cycleThread(threading.Thread):
                         firstScreen.setSliderVal(keyframe["liftHeight"])
                         firstScreen.setTiltLabelVal(keyframe["tiltDegree"])
                         text = (
-                            str(random.choice(self.__marc_berichten))
+                            str(random.choice(self.marc_berichten))
                             + " Het kostte: "
                             + str(round(time.time() - startTime, 2))
                             + " seconden"
@@ -270,13 +270,13 @@ class cycleThread(threading.Thread):
 
 class MainWindow(QMainWindow):
     # All important values
-    __sliderValue = 0
-    __waitBeforeTime = 0
-    __waitAfterTime = 2
-    __picsPerKeyframe = 20
-    __tiltValue = 0
-    __isCycleBusy = False
-    __emergencyFlag = False
+    sliderValue = 0
+    waitBeforeTime = 0
+    waitAfterTime = 2
+    picsPerKeyframe = 20
+    tiltValue = 0
+    isCycleBusy = False
+    emergencyFlag = False
 
     # Constructor, mostly contains GUI design
     def __init__(self):
@@ -284,9 +284,9 @@ class MainWindow(QMainWindow):
 
         self.setStyleSheet("background-color: #343541")
 
-        self.initUI()
+        self.__init__UI()
 
-    def initUI(self):
+    def __init__UI(self):
         self.setGeometry(100, 100, 600, 400)
 
         layout = QGridLayout()
@@ -355,7 +355,7 @@ class MainWindow(QMainWindow):
 
 
     def moveToPosition(self, goToPos):
-        curLiftHeight = self.__sliderValue
+        curLiftHeight = self.sliderValue
         stepsNeeded = int(goToPos) - curLiftHeight
         curLiftHeight += stepsNeeded
         if stepsNeeded <= 0:
@@ -367,7 +367,7 @@ class MainWindow(QMainWindow):
             print(str(stepsNeeded))
 
     def angleToPosition(self, goToPos):
-        curTiltAngle = self.__tiltValue
+        curTiltAngle = self.tiltValue
         stepsNeeded = int(goToPos) - curTiltAngle
         curTiltAngle += stepsNeeded
         if stepsNeeded <= 0:
@@ -382,47 +382,47 @@ class MainWindow(QMainWindow):
     def update_slider_label(self):
         value = self.slider.value()
         self.sliderLabel.setText("Height: " + str(int(value / 400)))
-        self.__sliderValue = value
+        self.sliderValue = value
 
     def moveButtonClicked(self):
         # TODO: Implement logic for the MOVE button
-        print("LIFT HEIGHT SET TO:", self.__sliderValue, "CM")
+        print("LIFT HEIGHT SET TO:", self.sliderValue, "CM")
 
     # Called when the reset button is clicked, points to other function
     def quickAddKeyframe(self):
-        thirdScreen.quickAddKeyframe(self.__sliderValue, self.__tiltValue)
+        thirdScreen.quickAddKeyframe(self.sliderValue, self.tiltValue)
 
     # Depending on which button got sent here it adds or subs 20 from the tilt variable. Add button has operator = + and sub has operator = -
     def tiltButtonsClicked(self, operator):
         if operator == "+":
-            self.__tiltValue += 200
+            self.tiltValue += 200
         elif operator == "-":
-            self.__tiltValue -= 200
-        self.tiltLabel.setText("Desired Tilt Angle: " + str(self.__tiltValue))
+            self.tiltValue -= 200
+        self.tiltLabel.setText("Desired Tilt Angle: " + str(self.tiltValue))
 
     # Depending on what the source and operator are, the correct value is added or subbed from the right time variable. Also refreshes the screen
     def waitBeforeClicked(self, operator):
         if operator == "+":
-            self.__waitBeforeTime += 0.5
+            self.waitBeforeTime += 0.5
         elif operator == "-":
-            self.__waitBeforeTime -= 0.5
-        self.waitBeforeLabel.setText("Wait Before Time: " + str(self.__waitBeforeTime))
+            self.waitBeforeTime -= 0.5
+        self.waitBeforeLabel.setText("Wait Before Time: " + str(self.waitBeforeTime))
 
     
     def waitAfterClicked(self, operator):
         if operator == "+":
-            self.__waitAfterTime += 0.5
+            self.waitAfterTime += 0.5
         elif operator == "-":
-            self.__waitAfterTime -= 0.5
-        self.waitAfterLabel.setText("Wait After Time: " + str(self.__waitAfterTime))
+            self.waitAfterTime -= 0.5
+        self.waitAfterLabel.setText("Wait After Time: " + str(self.waitAfterTime))
 
     # Depending on which button got sent here it adds or subs 1 from the pictures per keyframe variable. Add button has operator = + and sub has operator = -. Also refreshes the screen
     def picsPerKeyframeClicked(self, operator):
         if operator == "+":
-            self.__picsPerKeyframe += 1
+            self.picsPerKeyframe += 1
         elif operator == "-":
-            self.__picsPerKeyframe -= 1
-        self.picsPerKeyframeLabel.setText("Pictures: " + str(self.__picsPerKeyframe))
+            self.picsPerKeyframe -= 1
+        self.picsPerKeyframeLabel.setText("Pictures: " + str(self.picsPerKeyframe))
 
     # Changes screen
     def keyframeMenuClicked(self):
@@ -432,37 +432,37 @@ class MainWindow(QMainWindow):
         widget.setCurrentWidget(sixthScreen)
 
     def emergencyStopClicked(self):
-        if self.__emergencyFlag == False:
-            self.__emergencyFlag = True
+        if self.emergencyFlag == False:
+            self.emergencyFlag = True
             self.emergencyStopButton.setStyleSheet(emergencyButtonOnStyle)
         else:
-            self.__emergencyFlag = False
+            self.emergencyFlag = False
             self.emergencyStopButton.setStyleSheet(emergencyButtonOffStyle)
 
     # Checks if scanner isn't busy or in emergency stop mode, if not starts the cycle thread and changes the busy flag
     def cycle(self):
-        if self.__isCycleBusy != True and self.__emergencyFlag != True:
+        if self.isCycleBusy != True and self.emergencyFlag != True:
             newCycleThread = cycleThread(
-                self.__waitBeforeTime, self.__waitAfterTime, self.__picsPerKeyframe
+                self.waitBeforeTime, self.waitAfterTime, self.picsPerKeyframe
             )
             newCycleThread.start()
 
     def setCycleState(self, state):
-        self.__isCycleBusy = state
+        self.isCycleBusy = state
 
     def getEmercenyFlag(self):
-        return self.__emergencyFlag
+        return self.emergencyFlag
 
     # Sets the slider position
     def setSliderVal(self, value):
         self.slider.setSliderPosition(value)
 
     def newZeroClicked(self):
-        self.__tiltValue = 0
-        self.tiltLabel.setText("Angle: " + str(self.__tiltValue))
+        self.tiltValue = 0
+        self.tiltLabel.setText("Angle: " + str(self.tiltValue))
 
     def setTiltLabelVal(self, val):
-        self.__tiltValue = val
+        self.tiltValue = val
         self.tiltLabel.setText("Desired Tilt Angle: " + str(val))
 
     # Not working yet
@@ -606,8 +606,8 @@ class KeyframeListWindow(QMainWindow):
 
 
 class NewKeyframeWindow(QMainWindow):
-    __desiredHeight = 0
-    __desiredTilt = 0
+    desiredHeight = 0
+    desiredTilt = 0
 
     def __init__(self):
         super().__init__()
@@ -662,39 +662,39 @@ class NewKeyframeWindow(QMainWindow):
 
     def tiltButtonsClicked(self, operator):
         if operator == "+":
-            self.__desiredTilt += 200
+            self.desiredTilt += 200
         elif operator == "-":
-            self.__desiredTilt -= 200
-        self.tiltLabel.setText("Desired Tilt Angle: " + str(self.__desiredTilt))
+            self.desiredTilt -= 200
+        self.tiltLabel.setText("Desired Tilt Angle: " + str(self.desiredTilt))
 
     def heightButtonsBigClicked(self, operator):
         if operator == "+":
-            if self.__desiredHeight + 4000 <= 72000:
-                self.__desiredHeight += 4000
+            if self.desiredHeight + 4000 <= 72000:
+                self.desiredHeight += 4000
         elif operator == "-":
-            if self.__desiredHeight - 4000 >= 0:
-                self.__desiredHeight -= 4000
+            if self.desiredHeight - 4000 >= 0:
+                self.desiredHeight -= 4000
         self.heightLabel.setText(
-            "Desired Height: " + str(int(self.__desiredHeight / conversionValue))
+            "Desired Height: " + str(int(self.desiredHeight / conversionValue))
         )
 
         self.updateHeightLabel()
 
     def heightButtonsSmallClicked(self, operator):
         if operator == "+":
-            if self.__desiredHeight + 400 <= 72000:
-                self.__desiredHeight += 400
+            if self.desiredHeight + 400 <= 72000:
+                self.desiredHeight += 400
         elif operator == "-":
-            if self.__desiredHeight - 400 >= 0:
-                self.__desiredHeight -= 400
+            if self.desiredHeight - 400 >= 0:
+                self.desiredHeight -= 400
         self.heightLabel.setText(
-            "Desired Height: " + str(int(self.__desiredHeight / conversionValue))
+            "Desired Height: " + str(int(self.desiredHeight / conversionValue))
         )
 
         self.updateHeightLabel()
 
     def updateHeightLabel(self):
-        self.heightLabel.setText("Desired height: " + str(self.__desiredHeight / 400))
+        self.heightLabel.setText("Desired height: " + str(self.desiredHeight / 400))
 
     def reset_increment(self):
         # Reset the button press state
@@ -718,8 +718,8 @@ class NewKeyframeWindow(QMainWindow):
         keyframeName = "Keyframe " + str(nextKeyframe)
 
         # Gets wanted values from entries
-        liftHeight = self.__desiredHeight
-        tiltDegree = self.__desiredTilt
+        liftHeight = self.desiredHeight
+        tiltDegree = self.desiredTilt
 
         # Adds the kyframe to the last spot
         if keyframeName and liftHeight and tiltDegree:
@@ -765,8 +765,8 @@ class NewKeyframeWindow(QMainWindow):
 
 
 class EditKeyframeWindow(QMainWindow):
-    __desiredHeight = 0
-    __desiredTilt = 0
+    desiredHeight = 0
+    desiredTilt = 0
 
     def __init__(self):
         super().__init__()
@@ -811,8 +811,8 @@ class EditKeyframeWindow(QMainWindow):
 
     def editKeyframeClicked(self):
         if secondScreen.selectedKeyframeIndex is not None:
-            liftHeight = self.__desiredHeight
-            tiltDegree = self.__desiredTilt
+            liftHeight = self.desiredHeight
+            tiltDegree = self.desiredTilt
 
             if liftHeight and tiltDegree:
                 keyframeData = {
@@ -839,26 +839,26 @@ class EditKeyframeWindow(QMainWindow):
 
     def tiltButtonsClicked(self, operator):
         if operator == "+":
-            self.__desiredTilt += 200
+            self.desiredTilt += 200
         elif operator == "-":
-            self.__desiredTilt -= 200
-        self.tiltLabel.setText("Desired Tilt Angle: " + str(self.__desiredTilt))
+            self.desiredTilt -= 200
+        self.tiltLabel.setText("Desired Tilt Angle: " + str(self.desiredTilt))
 
     def heightButtonsClicked(self, operator):
         if operator == "+":
-            self.__desiredHeight += 2000
-            self.heightLabel.setText(f"Value: {self.__desiredHeight}")
+            self.desiredHeight += 2000
+            self.heightLabel.setText(f"Value: {self.desiredHeight}")
         elif operator == "-":
-            self.__desiredHeight -= 2000
-        self.heightLabel.setText("Desired height: " + str(self.__desiredHeight / 400))
+            self.desiredHeight -= 2000
+        self.heightLabel.setText("Desired height: " + str(self.desiredHeight / 400))
 
     def backButtonClicked(self):
         widget.setCurrentWidget(secondScreen)
 
 
 class KeyframeCalculator(QMainWindow):
-    __objHeight = 30
-    __objSize = ""
+    objHeight = 30
+    objSize = ""
 
     def __init__(self):
 
@@ -896,8 +896,8 @@ class KeyframeCalculator(QMainWindow):
         oppositeSide = objDistance
         scannerHeight = totHeight
         conversionVal = conversionValue
-        size = self.__objSize
-        height = self.__objHeight
+        size = self.objSize
+        height = self.objHeight
 
         if size == 0:
             heightIncr = 8
@@ -907,11 +907,11 @@ class KeyframeCalculator(QMainWindow):
             heightIncr = 12
 
         keyframes_data = {}  # Dictionary to store keyframe data
-        initialHeight = height - (heightIncr * 3)
+        __init__ialHeight = height - (heightIncr * 3)
 
         # Calculate keyframe data using trigonometry
         for i in range(1, 8):
-            newHeight = initialHeight + i * heightIncr
+            newHeight = __init__ialHeight + i * heightIncr
             x = scannerHeight - newHeight
             rightSideTriangle = scannerHeight - height - x
 
@@ -974,11 +974,11 @@ class KeyframeCalculator(QMainWindow):
     def updateSizeSliderLabel(self, value):
         size_options = ["Small", "Medium", "Large"]
         self.sizeSliderLabel.setText(f"Size: {size_options[value]}")
-        self.__objSize = value
+        self.objSize = value
 
     def updateHeightSliderLabel(self, value):
         self.heightSliderLabel.setText("Height: " + str(value))
-        self.__objHeight = value
+        self.objHeight = value
 
 
 class TurntableMenuWindow(QMainWindow):

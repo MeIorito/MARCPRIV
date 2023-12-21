@@ -1,11 +1,12 @@
 import RPi.GPIO as GPIO
 import math
+import threading
 from time import sleep
 
 # Pin declaration
 EMERGENCY = 32 # Emergency Pin
 
-TILTZERO = 25
+TILTZERO = 22
 
 DIRTABLE  = 36 # Turntable Pins
 STEPTABLE = 33 #
@@ -58,20 +59,17 @@ GPIO.output(DIRTILT,  CW)
 def calibrateTilthead():
     if GPIO.input(TILTZERO) != False:
         while GPIO.input(TILTZERO) != False:
-            if GPIO.input(EMERGENCY) != False:
-                break
-            motorTiltCCW(1)
+            motorTiltCW(1)
             sleep(TILTSPEEDSLOW)
     else:
         while GPIO.input(TILTZERO) == False:
-            if GPIO.input(EMERGENCY) != False:
-                break
-            motorTiltCW(20)
+            motorTiltCCW(1)
+            sleep(TILTSPEEDSLOW)
+        for x in range(800):
+            motorTiltCCW(1)
             sleep(TILTSPEEDSLOW)
         while GPIO.input(TILTZERO) != False:
-            if GPIO.input(EMERGENCY) != False:
-                break
-            motorTiltCCW(1)
+            motorTiltCW(1)
             sleep(TILTSPEEDSLOW)
 
 def calibrateCameraLift():
@@ -160,9 +158,37 @@ def motorTiltCCW(distance): # Move the Tilthead <distance> steps counter clockwi
         sleep(TILTSPEEDFAST)
 
 def captureImage():
+    print("MAAKT EEN FOTO!")
     GPIO.output(FOCUS,  1)
     sleep(1)
     GPIO.output(SHUTTER,1)
-    sleep(2)
+    sleep(0.5)
     GPIO.output(FOCUS,  0)
     GPIO.output(SHUTTER,0)
+
+def fullTurnCycle(stepsPerKeyframe, picsPerKeyframe):
+    for _ in range(picsPerKeyframe):
+        for _ in range(stepsPerKeyframe):
+            if GPIO.input(EMERGENCY) != False:
+                print("Emergency triggered")
+                break
+            GPIO.output(STEPTABLE,GPIO.HIGH)
+            sleep(0.0004)
+            GPIO.output(STEPTABLE,GPIO.LOW)
+            sleep(0.0004)
+        camThread = camera()
+        camThread.start()
+
+def startVideo():
+    GPIO.output(SHUTTER,1)
+
+def stopVideo():
+    GPIO.output(SHUTTER,0)
+    
+class camera(threading.Thread):
+    
+    def __init__(self):
+        threading.Thread.__init__(self)
+        
+    def run(self):
+        captureImage()

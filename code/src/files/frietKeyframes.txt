@@ -1,0 +1,42 @@
+{
+    "Keyframe 1": {
+        "liftHeight": 6000,
+        "tiltDegree": 2000,
+        "timeAdded": "17/10/2023 15:51:39"
+    },
+    "Keyframe 2": {
+        "liftHeight": 8000,
+        "tiltDegree": 1400,
+        "timeAdded": "17/10/2023 15:51:40"
+    },
+    "Keyframe 3": {
+        "liftHeight": 10000,
+        "tiltDegree": 800,
+        "timeAdded": "17/10/2023 15:51:41"
+    },
+    "Keyframe 4": {
+        "liftHeight": 12000,
+        "tiltDegree": 200,
+        "timeAdded": "17/10/2023 15:51:42"
+    },
+    "Keyframe 5": {
+        "liftHeight": 14000,
+        "tiltDegree": -400,
+        "timeAdded": "17/10/2023 15:51:43"
+    },
+    "Keyframe 6": {
+        "liftHeight": 16000,
+        "tiltDegree": -800,
+        "timeAdded": "17/10/2023 15:52:06"
+    },
+    "Keyframe 7": {
+        "liftHeight": 18000,
+        "tiltDegree": -1400,
+        "timeAdded": "17/10/2023 15:52:07"
+    },
+    "Keyframe 8": {
+        "liftHeight": 20000,
+        "tiltDegree": -2200,
+        "timeAdded": "17/10/2023 15:52:07"
+    }
+}
