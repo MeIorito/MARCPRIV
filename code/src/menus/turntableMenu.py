@@ -1,19 +1,10 @@
-import sys
-import json
-import time
-import math
-import slack
-import random
-import threading
+
 from constants import constants
-from classes import infiniteTurn
-from time import sleep
-from PyQt5 import QtCore
+from threads import infiniteTurn, timelapseCycle
 from PyQt5.QtCore import *
 from constants import *
-from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
+from PyQt5.QtWidgets import QMainWindow
 
 class TurntableMenuWindow(QMainWindow):
     
@@ -21,10 +12,11 @@ class TurntableMenuWindow(QMainWindow):
     turntableSpeedDisplay = "Medium"
     turnSignal = "OFF"
 
-    def __init__(self, menuController):
+    def __init__(self, menuController, tableMotorController):
         super().__init__()
 
         self.mc = menuController
+        self.tc = tableMotorController
 
         self.setStyleSheet("background-color: #343541;")
         self.setGeometry(100, 100, 800, 400)
@@ -41,7 +33,7 @@ class TurntableMenuWindow(QMainWindow):
 
         self.backButton = constants.buttonFactory.create("BACK", self.back, constants.buttonStyle, constants.size)
         self.turnButton = constants.buttonFactory.create(f'INFINITE TURN: {self.turnSignal}', self.turn, constants.buttonStyle, constants.size)
-        self.frietButton = constants.buttonFactory.create("TIMELAPS", self.timelaps, constants.buttonStyle, constants.size)
+        self.frietButton = constants.buttonFactory.create("TIMELAPSE", self.timelaps, constants.buttonStyle, constants.size)
 
         window.addWidget(self.speedLabel, 0, 1)
         window.addLayout(self.speedButtonsLayout, 1, 1)
@@ -66,7 +58,7 @@ class TurntableMenuWindow(QMainWindow):
     def turn(self):
         if self.turnSignal == "OFF":
             self.turnSignal = "ON"
-            thread = infiniteTurn.infiniteTurnThread(self)
+            thread = infiniteTurn.infiniteTurnThread(self, self.tc)
             thread.start()
             self.turnButton.setText(f'INFINITE TURN: {self.turnSignal}')
         else:
@@ -74,7 +66,8 @@ class TurntableMenuWindow(QMainWindow):
             self.turnButton.setText(f'INFINITE TURN: {self.turnSignal}')
 
     def timelaps(self):
-        pass
+        thread = timelapseCycle.timelapsCycleThread(self.mc, self.tc, self.turntableSpeed)
+        thread.start()
 
     def back(self):
         self.mc.showMainMenu()

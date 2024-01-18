@@ -1,28 +1,31 @@
-from classes import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from constants import constants
 from threads import stopCycle
-from controllers import motorfunctions
 from PyQt5.QtWidgets import QMainWindow
 
 class MainWindow(QMainWindow):
-    # All important values
-    __waitBeforeTime = 1
-    __waitAfterTime = 0
-    __picsPerKeyframe = 25
-    __tiltValue = 0
-    __desiredTilt = 0
-    __heightValue = 0
-    __desiredHeight = 0
-    __isCycleBusy = False
-    __emergencyFlag = False
 
     # Constructor with menuController as parameter
-    def __init__(self, menuController):
+    def __init__(self, menuController, tiltMotorController, heightMotorController, cameraController, tableMotorController):
         super().__init__()
 
+        # All important values
+        self.__waitBeforeTime = 1
+        self.__waitAfterTime = 0
+        self.__picsPerKeyframe = 25
+        self.__tiltValue = 0
+        self.__desiredTilt = 0
+        self.__heightValue = 0
+        self.__desiredHeight = 0
+        self.__isCycleBusy = False
+        self.__emergencyFlag = False
+
         self.mc = menuController
+        self.tc = tiltMotorController
+        self.hc = heightMotorController
+        self.cc = cameraController
+        self.ttc = tableMotorController
 
         self.setStyleSheet("background-color: #343541")
         self.setGeometry(100, 100, 600, 400)
@@ -102,9 +105,9 @@ class MainWindow(QMainWindow):
         if stepsNeeded <= 0:
             # Makes sure neededSteps is positive
             stepsNeeded = stepsNeeded * -1
-            motorfunctions.motorLiftDown(stepsNeeded)
+            self.hc.moveMotorDown(stepsNeeded)
         elif stepsNeeded >= 0:
-            motorfunctions.motorLiftUp(stepsNeeded)
+            self.hc.moveMotorUp(stepsNeeded)
         self.__heightValue = self.__desiredHeight
 
     # Calculates the steps needed to move to a certain tilt angle.
@@ -115,9 +118,9 @@ class MainWindow(QMainWindow):
         if stepsNeeded <= 0:
             # Makes sure neededSteps is positive
             stepsNeeded = stepsNeeded * -1
-            motorfunctions.motorTiltCW(stepsNeeded)
+            self.tc.moveMotorUp(stepsNeeded)
         elif stepsNeeded >= 0:
-            motorfunctions.motorTiltCCW(stepsNeeded)
+            self.tc.moveMotorDown(stepsNeeded)
         self.__tiltValue = self.__desiredTilt
 
     # Called when the slider is used, changes the label and the variable for the wanted lift height. /conversion is for conversion from steps to cm
@@ -136,7 +139,7 @@ class MainWindow(QMainWindow):
         self.mc.thirdScreen.quickAddKeyframe(self.__desiredHeight, self.__tiltValue)
 
     def resetTiltButtonClicked(self):
-        motorfunctions.calibrateTilthead()
+        self.tc.calibrateTilthead()
         self.__tiltValue = 0
         self.__desiredTilt = 0
         self.setTiltLabelVal(self.__tiltValue)
@@ -194,7 +197,7 @@ class MainWindow(QMainWindow):
     # Checks if MARC isn't busy or in emergency stop mode, if not starts the cycle thread and changes the busy flag
     def cycle(self):
         if self.__isCycleBusy != True and self.__emergencyFlag != True:
-            newCycleThread = stopCycle.cycleThread(self.mc, self.__waitBeforeTime, self.__waitAfterTime, self.__picsPerKeyframe)
+            newCycleThread = stopCycle.stopCycleThread(self.mc, self.cc, self.ttc, self.__waitBeforeTime, self.__waitAfterTime, self.__picsPerKeyframe)
             newCycleThread.start()
 
     # Set state of MARC
@@ -226,11 +229,11 @@ class MainWindow(QMainWindow):
     # Resets the height ans til to 0
     def reset(self):
         if not self.__isCycleBusy:
-            motorfunctions.calibrateTilthead()
+            self.tc.calibrateTilthead()
             self.__tiltValue = 0
             self.__desiredTilt = 0
             self.setTiltLabelVal(self.__tiltValue)
-            motorfunctions.calibrateCameraLift()
+            self.hc.calibrateCameraLift()
             self.__heightValue = 0
             self.__desiredHeight = 0
             self.setSliderVal(self.__heightValue)

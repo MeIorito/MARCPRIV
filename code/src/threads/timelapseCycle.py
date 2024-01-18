@@ -24,10 +24,13 @@ class timelapsCycleThread(threading.Thread):
     ]
 
     # Constructor, needs the wait times, pictures per keyframe and rotations for the cycle.
-    def __init__(self, menuController, picsPerKeyframe):
+    def __init__(self, menuController, tableMotorController, speed):
         threading.Thread.__init__(self)
         self.mc = menuController
-        self.__picsPerKeyframe = picsPerKeyframe
+        self.tc = tableMotorController
+        self.__speed = speed
+        self.__picsPerKeyframe = self.mc.firstScreen._MainWindow__picsPerKeyframe
+        self.__emergencyFlag = self.mc.firstScreen._MainWindow__emergencyFlag
         self.__turntableSpeed = self.mc.fifthScreen.turntableSpeed
         self.__degreesPerRotation = int(64000 / self.__picsPerKeyframe)
 
@@ -70,8 +73,8 @@ class timelapsCycleThread(threading.Thread):
                         self.mc.firstScreen.setSliderVal(keyframesData[f"Keyframe {i}"]["liftHeight"])
                         self.mc.firstScreen.setTiltLabelVal(keyframesData[f"Keyframe {i}"]["tiltDegree"])
                         
-                        motorfunctions.fullTurnCycle(self.__degreesPerRotation, self.__picsPerKeyframe)
-                        sleep(2)
+                        self.tc.fullTurnCycle(self.__picsPerKeyframe, self.__speed)
+                        sleep(1.5)
                
                         text = (
                             str(random.choice(self.__marcMessages))

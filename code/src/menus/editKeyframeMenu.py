@@ -1,19 +1,10 @@
-import sys
 import json
-import time
-import math
-import slack
-import random
-import threading
 from constants import constants
-from classes import *
-from time import sleep
-from PyQt5 import QtCore
+from threads import *
 from PyQt5.QtCore import *
 from constants import *
-from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QSlider
+from PyQt5.QtWidgets import QMainWindow
 
 class EditKeyframeWindow(QMainWindow):
     __desiredHeight = 0

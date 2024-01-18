@@ -2,12 +2,15 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from abc import ABC, abstractmethod
 
-
+# Parent class for all factories
 class Factory(ABC):
 
     def create(self):
         pass
 
+# Child classes for each type of widget
+# Each child class has a static method that creates a widget and returns it
+# This is done so that the widget can be created without having to create an instance of the factory
 
 class sliderFactory(Factory):
     @staticmethod

@@ -1,12 +1,11 @@
-from controllers import motorfunctions
 import threading
 
 class infiniteTurnThread(threading.Thread):
-    def __init__(self, turnTableScreen):
+    def __init__(self, turnTableScreen, tableMotorController):
         threading.Thread.__init__(self)
         self.tts = turnTableScreen
+        self.tc = tableMotorController
 
     def run(self):
-        print("HOI")
         while self.tts.turnSignal == "ON":
-            motorfunctions.motorTableCW(200, float(self.tts.turntableSpeed))
+            self.tc.moveMotorUp(200, float(self.tts.turntableSpeed))

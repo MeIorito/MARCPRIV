@@ -24,9 +24,11 @@ class stopCycleThread(threading.Thread):
     ]
 
     # Constructor, needs the wait times, pictures per keyframe and rotations for the cycle.
-    def __init__(self, menuController, waitBeforeTime, waitAfterTime, picsPerKeyframe):
+    def __init__(self, menuController, cameraController, tableMotorController, waitBeforeTime, waitAfterTime, picsPerKeyframe):
         threading.Thread.__init__(self)
         self.mc = menuController
+        self.cc = cameraController
+        self.tc = tableMotorController
         self.__beforeWaitTime = waitBeforeTime
         self.__afterWaitTime = waitAfterTime
         self.__picsPerKeyframe = picsPerKeyframe
@@ -74,9 +76,9 @@ class stopCycleThread(threading.Thread):
                         for _ in range(self.__picsPerKeyframe):
                             if not self.mc.firstScreen.getEmercenyFlag():
                                 sleep(self.__beforeWaitTime)
-                                motorfunctions.startVideo()
+                                self.cc.captureImage()
                                 sleep(self.__afterWaitTime)
-                                motorfunctions.motorTableCW(self.__degreesPerRotation, self.__turntableSpeed)
+                                self.tc.moveMotorUp(self.__degreesPerRotation, self.__turntableSpeed)
                             else:
                                 text = "The emergency button has been pressed!"
                                 break
