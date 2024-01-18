@@ -1,6 +1,6 @@
 import json
 from constants import constants
-from classes import *
+from threads import *
 from PyQt5.QtCore import *
 from constants import *
 from PyQt5.QtWidgets import *
@@ -128,5 +128,5 @@ class NewKeyframeWindow(QMainWindow):
             self.mc.secondScreen.saveKeyframesData()
             self.mc.secondScreen.createKeyframeTable()
             self.mc.secondScreen.keyframeTable.setRowHeight(nextKeyframe - 1, 70)
-            for column in range(secondScreen.keyframeTable.columnCount()):
+            for column in range(self.mc.secondScreen.keyframeTable.columnCount()):
                 self.mc.secondScreen.keyframeTable.setColumnWidth(column, 125)

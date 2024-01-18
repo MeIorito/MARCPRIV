@@ -1,22 +1,18 @@
 from PyQt5.QtGui import QFont
-from classes import factory
-import sys
-from PyQt5 import QtCore
+from constants import factory
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import QApplication
 
 # Constants | slack auth | settings file | cycleCounterFile | slack channel name  | font size | button size
-slackToken = "xoxb-5867825218247-5875744156982-TuLlFjvAptQvxyraY4ZQ4Vm6"
-settingsFile = "files\settings.txt"
-cycleCounterFile = "files\cycleCounter.txt"
-slackChannel = "testbot"
+slackToken = "Your Slack Token"
+settingsFile = "Your Settings File"
+cycleCounterFile = "Your Cycle Counter File"
+slackChannel = "Your Slack Channel"
 font = QFont()
 font.setPointSize(11)
 size = (100, 80)
-turntableSpeeds = [0.002, 0.0005, 0.0002]
+turntableSpeeds = [0.002, 0.0007, 0.0002]
 
-objDistance = 43  # Distance between object and camera in cm, used for tilt calculations
 totHeight = 180  # Total height of the lift
 conversionValue = 72000 / totHeight  # Steps per cm
 
