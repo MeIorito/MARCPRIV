@@ -89,7 +89,6 @@ See the scanner movents here:
   
   - **Zero Position**: Consistent camera zero position
   
-  - **Keyframe Calculator**: Automatically calculate and add keyframes based on predefined scanning patterns, enhancing efficiency.
 
 # Hardware
 
@@ -113,8 +112,8 @@ See the scanner movents here:
 sudo apt install python3-pyqt5
 pip install slack
 ```
-  3. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional) If you decide not to use this feature you will have to manually delete the slack code.
-  4. Change the slackToken to your own. This has to be done in the constants file, after that in the cycle class, you should delete all the code that has to do with slack messaging.
+  3. Set up the slack bot with [this](https://medium.com/applied-data-science/how-to-build-you-own-slack-bot-714283fd16e5) tutorial. (Optional) If you decide not to use this feature the code wil throw an exception everytime it tries to use it.
+  4. Change the slackToken to your own. This has to be done in the constants file.
 ```Python
 slackToken = <"youToken">
 ```
@@ -144,17 +143,13 @@ objDistance = <"yourDistanceInCm">
   
   ## Usage
   
-  ### Manual keyframes
-  
   1. Launch the application.
   2. Correctly connect the camera to the Raspbarry Pi.
   3. Manage keyframes via the "KEYFRAME MENU" button: add, edit, delete. Or use the "QUICK KEYFRAME" button on the main screen to add the current height and tilt to a keyframe.(see [UI](#UI))
   4. Adjust wait times and pictures per keyframe as needed. (see [UI](#UI))
-  5. Click "START CYCLE" to initiate a scanning cycle. (see [UI](#UI)) 
+  5. Click "START CYCLE" to initiate a scanning cycle. Or click "TIMELAPS SCAN" for a faster scan. (see [UI](#UI)) 
   6. Wait for the results!
   
-  ### Automatic keyframes
-  **WIP**
   
   ## Dependencies
   
